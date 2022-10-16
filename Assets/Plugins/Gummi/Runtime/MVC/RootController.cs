@@ -1,4 +1,5 @@
 ﻿using System;
+using Gummi.Singletons;
 using UnityEngine;
 
 namespace Gummi.MVC
@@ -6,7 +7,7 @@ namespace Gummi.MVC
     /// <summary>
     /// </summary>
     /// <typeparam name="T"> Enum to map SubControllers to their use. </typeparam>
-    public abstract class RootController<T> : MonoBehaviour
+    public abstract class RootController<T> : NonDestructiveSingleton<RootController<T>>
         where T : Enum
     {
         // TODO: make this readonly to the editor
