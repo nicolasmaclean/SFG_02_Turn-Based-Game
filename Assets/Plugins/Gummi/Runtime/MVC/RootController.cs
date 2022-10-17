@@ -25,16 +25,9 @@ namespace Gummi.MVC
             foreach (T state in Enum.GetValues(typeof(T)))
             {
                 controller = GetController(state);
-
-                if (controller == null)
-                {
-                    Debug.LogWarning($"{name}: missing controller for {Enum.GetName(typeof(T), state)}. If this.ChangeController " +
-                        $"attempts to engage this controller, the currently active controller will not be disengaged.");
-                }
-                else
-                {
-                    controller.root = this;
-                }
+                if (controller == null) continue;
+                
+                controller.root = this;
             }
 
             // activate initial controller
