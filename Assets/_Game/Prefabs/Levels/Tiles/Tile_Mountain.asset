@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8035bdd76bef462a968d952af03e9767, type: 3}
+  m_Name: Tile_Mountain
+  m_EditorClassIdentifier: 
+  DisplayName: Mountain Tile
+  Prefab: {fileID: 4058848535304104035, guid: 980e2896af563e84caf7203b83b44fc8, type: 3}
+  Description: Blocks movement and projectiles. Damage twice to destroy
