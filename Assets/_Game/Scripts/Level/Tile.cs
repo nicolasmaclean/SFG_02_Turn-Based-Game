@@ -15,6 +15,9 @@ namespace Game
         const float VERTICAL_OFFSET     = 100f;
         const float COLUMN_DELAY        = 0.2f;
 
+        public string DisplayName => _displayName;
+        public string Description => _description;
+        
         [Header("Display Data")]
         [SerializeField]
         string _displayName = "Display Name...";
