@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 789cb00cdcbf4094a5d8bb44cdce8676, type: 3}
+  m_Name: Tile Palette
+  m_EditorClassIdentifier: 
+  _grassVariants:
+  - {fileID: 7714380191656336801, guid: 2a8b37f0de382344fb310ab948658e36, type: 3}
+  - {fileID: 7714380191656336801, guid: 07b974cdc82fc57499f7aeef4e46fb37, type: 3}
+  _buildingVariants:
+  - {fileID: 7714380191656336801, guid: 2328e180fb8bcb74b9a132ac1654f9e3, type: 3}
+  _mountainVariants:
+  - {fileID: 7714380191656336801, guid: fa7b8ef8be3ad3e428938c9306c4b6ad, type: 3}

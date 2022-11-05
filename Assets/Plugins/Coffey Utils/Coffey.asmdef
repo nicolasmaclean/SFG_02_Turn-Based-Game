@@ -1,11 +1,7 @@
 {
-    "name": "Game",
-    "rootNamespace": "Game",
-    "references": [
-        "GUID:6dd5d66fb4371c84db1b501883baef20",
-        "GUID:75469ad4d38634e559750d17036d5f7c",
-        "GUID:202a14e7dc84cbb4ea86c6234ffab5e0"
-    ],
+    "name": "Coffey",
+    "rootNamespace": "Coffey",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

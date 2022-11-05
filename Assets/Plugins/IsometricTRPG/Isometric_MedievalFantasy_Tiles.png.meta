@@ -47,7 +47,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 15
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 0
   alphaUsage: 1
@@ -148,8 +148,16 @@ TextureImporter:
       pivot: {x: 0.5000001, y: 0.7058824}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
-      physicsShape: []
-      tessellationDetail: 0
+      physicsShape:
+      - - {x: -2, y: 7.5}
+        - {x: -8, y: 4.5}
+        - {x: -8, y: 2.5}
+        - {x: -2, y: -0.5}
+        - {x: 2, y: -0.5}
+        - {x: 8, y: 2.5}
+        - {x: 8, y: 4.5}
+        - {x: 3, y: 7.5}
+      tessellationDetail: 1
       bones: []
       spriteID: cd605e272f75beb4f882e50d7e5f713e
       internalID: -242201006
@@ -376,7 +384,7 @@ TextureImporter:
         width: 16
         height: 17
       alignment: 9
-      pivot: {x: 0.5, y: 0.47058824}
+      pivot: {x: 0.5, y: 0.7058824}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -641,15 +649,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Isometric_MedievalFantasy_Tiles_25
+      name: Plains
       rect:
         serializedVersion: 2
         x: 48
         y: 119
         width: 16
         height: 17
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.7058824}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -1019,15 +1027,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Isometric_MedievalFantasy_Tiles_43
+      name: Pyramid
       rect:
         serializedVersion: 2
         x: 160
         y: 102
         width: 16
         height: 17
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.23529412}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -1985,15 +1993,15 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Isometric_MedievalFantasy_Tiles_89
+      name: Concrete
       rect:
         serializedVersion: 2
         x: 16
         y: 17
         width: 16
         height: 17
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+      alignment: 9
+      pivot: {x: 0.5, y: 0.7058824}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -2453,11 +2461,9 @@ TextureImporter:
       Isometric_MedievalFantasy_Tiles_57: -254669290
       Isometric_MedievalFantasy_Tiles_51: -46552552
       Grass_01: -242201006
-      Isometric_MedievalFantasy_Tiles_25: 451526230
       Isometric_MedievalFantasy_Tiles_97: -310179648
       Isometric_MedievalFantasy_Tiles_21: 596319784
       Isometric_MedievalFantasy_Tiles_35: -1363966507
-      Isometric_MedievalFantasy_Tiles_43: 1525965490
       Isometric_MedievalFantasy_Tiles_98: 639089188
       Isometric_MedievalFantasy_Tiles_76: 1493100464
       Isometric_MedievalFantasy_Tiles_91: -1040507931
@@ -2496,13 +2502,14 @@ TextureImporter:
       Isometric_MedievalFantasy_Tiles_6: -418943904
       Isometric_MedievalFantasy_Tiles_47: 1964832314
       Isometric_MedievalFantasy_Tiles_85: -157715848
+      Plains: 451526230
       Isometric_MedievalFantasy_Tiles_5: 420014886
       Isometric_MedievalFantasy_Tiles_17: 1895969756
       Isometric_MedievalFantasy_Tiles_29: 125580676
-      Isometric_MedievalFantasy_Tiles_89: 2089978471
       Isometric_MedievalFantasy_Tiles_7: 1295477468
       Isometric_MedievalFantasy_Tiles_64: 975280354
       Isometric_MedievalFantasy_Tiles_72: 962563528
+      Concrete: 2089978471
       Isometric_MedievalFantasy_Tiles_34: 890589414
       Isometric_MedievalFantasy_Tiles_44: 1395181695
       Isometric_MedievalFantasy_Tiles_95: -1193157620
@@ -2528,6 +2535,7 @@ TextureImporter:
       Isometric_MedievalFantasy_Tiles_36: 90764786
       Isometric_MedievalFantasy_Tiles_10: -1721547979
       Isometric_MedievalFantasy_Tiles_20: 1077341001
+      Pyramid: 1525965490
       Isometric_MedievalFantasy_Tiles_19: -1349407325
       Isometric_MedievalFantasy_Tiles_24: -1378227376
       Isometric_MedievalFantasy_Tiles_87: 537919518

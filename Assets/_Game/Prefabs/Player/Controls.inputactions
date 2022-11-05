@@ -358,6 +358,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "DeltaPoint",
+                    "type": "Value",
+                    "id": "dec208ab-9bd5-4a9f-ac50-f76f75acba58",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -787,6 +796,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Parallax",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3725b9c3-45e5-420c-9522-1c23aa298e42",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "DeltaPoint",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
