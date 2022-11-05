@@ -164,6 +164,7 @@ GameObject:
   - component: {fileID: 7714380191656336800}
   - component: {fileID: 7714380191656336801}
   - component: {fileID: 1617032831149946544}
+  - component: {fileID: -2524099207975493349}
   m_Layer: 5
   m_Name: Tile_Mountain
   m_TagString: Untagged
@@ -283,3 +284,15 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
+--- !u!225 &-2524099207975493349
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7714380191656336803}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

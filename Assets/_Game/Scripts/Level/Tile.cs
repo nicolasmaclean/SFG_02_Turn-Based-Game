@@ -1,14 +1,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Game.Controllers;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Game
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class Tile : MonoBehaviour
     {
         static readonly Vector2 SPACING = new(80, -40);
+        const float ANIMAION_LENGTH     = 0.5f;
+        const float VERTICAL_OFFSET     = 100f;
+        const float COLUMN_DELAY        = 0.2f;
 
         [Header("Display Data")]
         [SerializeField]
@@ -21,6 +26,14 @@ namespace Game
         [Header("Debug")]
         [SerializeField, ReadOnly]
         Vector2Int _position;
+
+        CanvasGroup _group;
+        
+        void Start()
+        {
+            _group = GetComponent<CanvasGroup>();
+            AnimateIn();
+        }
 
         public void Configure(int row, int column)
         {
@@ -46,6 +59,24 @@ namespace Game
         public void OnHoverExit()
         {
             GetComponentInChildren<Image>().color = Color.white;
+        }
+
+        void AnimateIn()
+        {
+            _group.alpha = 0;
+            Vector3 initialPosition = transform.position;
+            transform.position += Vector3.up * VERTICAL_OFFSET;
+            
+            StartCoroutine(Animation());
+
+            IEnumerator Animation()
+            {
+                yield return new WaitForSeconds(COLUMN_DELAY * _position.y);
+                
+                // concurrently fade in
+                StartCoroutine(Coroutines.AlphaLerp(_group, 1, ANIMAION_LENGTH / 2));
+                yield return StartCoroutine(Coroutines.PositionLerp(transform, initialPosition, ANIMAION_LENGTH));
+            }
         }
     }
 }
