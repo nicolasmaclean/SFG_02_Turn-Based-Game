@@ -2,8 +2,13 @@
 using Game.Utility;
 using UnityEngine;
 
-namespace Game
+namespace Game.Level
 {
+    public enum TileType
+    {
+        Grass = 0, Building = 1, Mountain = 2,
+    }
+    
     [CreateAssetMenu(menuName="Level/Tile Palette")]
     public class TilePalette : DynamicSingletonSO<TilePalette>
     {
@@ -61,10 +66,5 @@ namespace Game
             int i = Random.Range(0, tiles.Count);
             return tiles[i];
         }
-    }
-
-    public enum TileType
-    {
-        Grass = 0, Building = 1, Mountain = 2,
     }
 }

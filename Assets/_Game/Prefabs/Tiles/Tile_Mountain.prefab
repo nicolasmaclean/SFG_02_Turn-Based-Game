@@ -181,7 +181,7 @@ RectTransform:
   m_GameObject: {fileID: 7714380191656336803}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7714380191323683504}
@@ -260,6 +260,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6a1abc376c9572439d81d9f9f9bfe2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isNavigable: 0
   _displayName: Mountain Tile
   _description: Blocks movement and projectiles. Damage twice to destroy.
   _position: {x: 0, y: 0}

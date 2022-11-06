@@ -1,12 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Play.Units;
+using Game.Utility;
 using UnityEngine;
 
-namespace Game
+namespace Game.Level
 {
     public class Map : MonoBehaviour
     {
+        public Transform GrpTiles
+        {
+            get
+            {
+                if (!_grpTiles)
+                {
+                    _grpTiles = new GameObject("GRP_Tiles").transform;
+                    _grpTiles.SetParent(transform, worldPositionStays: false);
+                }
+
+                return _grpTiles;
+            }
+        }
+        Transform _grpTiles;
+        
+        public Transform GrpUnits
+        {
+            get
+            {
+                if (!_grpUnits)
+                {
+                    _grpUnits = new GameObject("GRP_Units").transform;
+                    _grpUnits.SetParent(transform, worldPositionStays: false);
+                }
+
+                return _grpUnits;
+            }
+        }
+        Transform _grpUnits;
+        
         public Tile[,] Tiles
         {
             get
@@ -21,16 +53,26 @@ namespace Game
         }
         Tile[,] _runtimeTiles;
 
+        public Dictionary<Vector2Int, Unit> Units => _runtimeUnits;
+        public Dictionary<Vector2Int, Unit> _runtimeUnits;
+
+        [Header("Layout")]
         [SerializeField]
         [NonReorderable]
-        Row[] _tiles = new Row[8];
+        TileRow[] _tiles = new TileRow[8];
+
+        [SerializeField]
+        [NonReorderable]
+        PlacedUnit[] _units;
 
         void Awake()
         {
             PopulateTiles();
+            // PopulateUnits();
         }
 
-        [Button(Label = "Create Tiles")]
+        #region Generation
+        [Button(Label = "Create Tiles", Mode = ButtonMode.NotInPlayMode)]
         void PopulateTiles()
         {
             // validate data
@@ -42,17 +84,17 @@ namespace Game
                 return;
             }
             
-            ClearTiles();
+            Clear();
             
             // create tile instances
             _runtimeTiles = new Tile[8, 8];
             for (int r = 0; r < 8; r++)
             {
-                Row row = _tiles[r];
+                TileRow tileRow = _tiles[r];
                 for (int c = 0; c < 8; c++)
                 {
-                    TileType type = row.Data[c];
-                    var tile = _runtimeTiles[r, c] = TilePalette.Get(type, transform);
+                    TileType type = tileRow.Data[c];
+                    var tile = _runtimeTiles[r, c] = TilePalette.Get(type, GrpTiles);
                     tile.Configure(r, c);
                 }
             }
@@ -90,10 +132,33 @@ namespace Game
             }
         }
 
-        [Button(Label = "Clear Tiles")]
-        void ClearTiles()
+        [Button(Label = "Create Units", Mode = ButtonMode.NotInPlayMode)]
+        void PopulateUnits()
         {
-            // exit, there are no tiles to clear
+            // lazy-generate tiles, units are dependent on the tiles
+            if (Tiles == null)
+            {
+                PopulateTiles();
+            }
+            else if (_runtimeUnits != null)
+            {
+                ClearUnits();
+            }
+
+            _runtimeUnits = new Dictionary<Vector2Int, Unit>();
+            foreach (PlacedUnit data in _units)
+            {
+                Unit unit = UnitPalette.Get(data.type, GrpUnits);
+                unit.Owner = data.Owner;
+                
+                MoveUnit(unit, data.Position);
+            }
+        }
+        
+        [Button(Label = "Clear", Mode = ButtonMode.NotInPlayMode)]
+        void Clear()
+        {
+            // ignore, there are no tiles to clear
             if (_runtimeTiles != null)
             {
                 foreach (Tile t in _runtimeTiles)
@@ -103,6 +168,8 @@ namespace Game
                 _runtimeTiles = null;
             }
             
+            ClearUnits();
+            
             // delete extra children
             for (int i = transform.childCount-1; i >= 0; i--)
             {
@@ -111,28 +178,69 @@ namespace Game
             }
         }
 
-        Tile _hoverCurrent;
-        public void UpdateHover(Tile tile)
+        void ClearUnits()
         {
-            // if (_hoverCurrent)
-            // {
-            //     _hoverCurrent.GetComponentInChildren<Image>().color = Color.white;
-            // }
-            //
-            // _hoverCurrent = tile;
-            // _hoverCurrent.GetComponentInChildren<Image>().color = Color.red;
+            if (_runtimeUnits == null) return;
+
+            foreach (var placedUnit in _runtimeUnits)
+            {
+                DestroyImmediate(placedUnit.Value.gameObject);
+            }
+            _runtimeUnits = null;
+        }
+        #endregion
+
+        /// <summary>
+        /// Get <see cref="bool"/> matrix of tile positions that are un-navigable.
+        /// </summary>
+        /// <returns></returns>
+        public bool[,] GetNavigableMap()
+        {
+            Tile[,] tiles = Tiles;
+            bool[,] res = new bool[tiles.GetLength(0), tiles.GetLength(1)];
+
+            for (int r = 0; r < tiles.GetLength(0); r++)
+            {
+                for (int c = 0; c < tiles.GetLength(1); c++)
+                {
+                    res[r, c] = !tiles[r, c].IsNavigable;
+                }
+            }
+
+            return res;
         }
 
-        Tile _selectionCurrent;
-        public void UpdateSelection(Tile tile)
+        public List<Tile> GetTilesInRange(Vector2Int position, int range)
         {
-            
+            IEnumerable<Vector2Int> tilePositions = Pathfinding.GetTilesInRange(GetNavigableMap(), position, range);
+            return tilePositions.Select(pos => Tiles[pos.x, pos.y]).ToList();
+        }
+
+        public void MoveUnit(Vector2Int from, Vector2Int to)
+        {
+            Unit unit = Units[from];
+            _runtimeUnits.Remove(from);
+        }
+
+        public void MoveUnit(Unit unit, Vector2Int to)
+        {
+            _runtimeUnits.Add(to, unit);
+            unit.transform.position = Tiles[to.x, to.y].transform.position;
+            unit.Position = to;
         }
     }
 
     [System.Serializable]
-    public class Row
+    public class TileRow
     {
         public TileType[] Data = new TileType[8];
+    }
+
+    [System.Serializable]
+    public class PlacedUnit
+    {
+        public UnitType type;
+        public Vector2Int Position;
+        public Owner Owner;
     }
 }

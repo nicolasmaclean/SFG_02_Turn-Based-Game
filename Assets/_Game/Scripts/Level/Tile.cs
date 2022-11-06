@@ -10,13 +10,17 @@ namespace Game
     [RequireComponent(typeof(CanvasGroup))]
     public class Tile : MonoBehaviour
     {
-        static readonly Vector2 SPACING = new(80, -40);
+        static readonly Vector2 SPACING = new(64, -42);
         const float ANIMAION_LENGTH     = 0.5f;
         const float VERTICAL_OFFSET     = 100f;
         const float COLUMN_DELAY        = 0.2f;
 
         public string DisplayName => _displayName;
         public string Description => _description;
+        public bool IsNavigable => _isNavigable;
+        
+        [SerializeField]
+        bool _isNavigable = true;
         
         [Header("Display Data")]
         [SerializeField]
