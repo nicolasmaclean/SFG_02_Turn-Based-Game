@@ -51,4 +51,24 @@ namespace Gummi
             return output;
         }
     }
+
+    public static class ArrayExtensions
+    {
+        public static T[] ConvertTo1D<T>(this T[,] arr)
+        {
+            int rows = arr.GetLength(0);
+            int cols = arr.GetLength(1);
+            T[] result = new T[rows * cols];
+
+            for (int r = 0, k = 0; r < rows; r++)
+            {
+                for (int c = 0; c < cols; c++)
+                {
+                    result[k++] = arr[r, c];
+                }
+            }
+
+            return result;
+        }
+    }
 }

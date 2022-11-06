@@ -6,12 +6,12 @@ using UnityEngine;
 namespace Game.Play.Weapons
 {
     [CreateAssetMenu(menuName = "Weapons/Repair")]
-    public class Repair : WeaponSO
+    public class Repair : SkillSO
     {
         [SerializeField]
         int _healAmount;
         
-        public override void Activate(Unit user, Map map, int row, int column)
+        public override void Activate(Pawn user, Board board, int row, int column)
         {
             user.Heal(_healAmount);
         }

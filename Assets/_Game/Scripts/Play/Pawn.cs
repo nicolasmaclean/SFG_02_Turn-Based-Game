@@ -1,15 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Game.Play.Units
 {
-    public enum Owner
+    public enum Team
     {
         Enemy = 0, Player = 1,
     }
     
-    public class Unit : MonoBehaviour
+    public class Pawn : MonoBehaviour
     {
         public int InitialHealth => _initHealth;
         public int Health => _health;
@@ -32,9 +33,9 @@ namespace Game.Play.Units
         
         [Header("Meta Data")]
         [SerializeField]
-        string _unitName = "Unit Name...";
+        public string Name = "Pawn Name...";
 
-        public Owner Owner;
+        public Team team;
 
         public void Hurt(int amount)
         {

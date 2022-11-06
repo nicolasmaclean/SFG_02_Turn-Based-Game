@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Game.Play.Weapons
 {
-    public abstract class WeaponSO : ScriptableObject
+    public abstract class SkillSO : ScriptableObject
     {
         public Sprite Icon => _icon;
         
@@ -18,8 +18,8 @@ namespace Game.Play.Weapons
         [SerializeField]
         protected int _range;
 
-        public abstract void Activate(Unit user, Map map, int row, int column);
+        public abstract void Activate(Pawn user, Board board, int row, int column);
 
-        public List<Tile> GetTilesInRange(Map map, Vector2Int position) => map.GetTilesInRange(position, _range);
+        public List<Tile> GetTilesInRange(Board board, Vector2Int position) => board.GetTilesInRange(position, _range);
     }
 }

@@ -6,12 +6,12 @@ using UnityEngine;
 
 namespace Game.Play.Weapons
 {
-    public class Punch : WeaponSO
+    public class Punch : SkillSO
     {
         [SerializeField]
         int damage = 1;
         
-        public override void Activate(Unit user, Map map, int row, int column)
+        public override void Activate(Pawn user, Board board, int row, int column)
         {
             throw new System.NotImplementedException();
         }

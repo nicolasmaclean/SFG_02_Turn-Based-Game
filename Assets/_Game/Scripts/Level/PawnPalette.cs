@@ -4,32 +4,32 @@ using UnityEngine;
 
 namespace Game.Level
 {
-    public enum UnitType
+    public enum PawnType
     {
         Big = 0, Mass = 1,
     }
     
     [CreateAssetMenu(menuName="Level/Unit Palette")]
-    public class UnitPalette : DynamicSingletonSO<UnitPalette>
+    public class PawnPalette : DynamicSingletonSO<PawnPalette>
     {
         [SerializeField]
-        Unit _bigMech;
+        Pawn _bigMech;
         
         [SerializeField]
-        Unit _massMech;
+        Pawn _massMech;
         
-        public static Unit Get(UnitType type)
+        public static Pawn Get(PawnType type)
         {
-            Unit prefab;
+            Pawn prefab;
             
             switch (type)
             {
                 default:
-                case UnitType.Big:
+                case PawnType.Big:
                     prefab = Instance._bigMech;
                     break;
                 
-                case UnitType.Mass:
+                case PawnType.Mass:
                     prefab = Instance._massMech; 
                     break;
             }
@@ -43,9 +43,9 @@ namespace Game.Level
             return Instantiate(prefab);
         }
 
-        public static Unit Get(UnitType type, Transform parent)
+        public static Pawn Get(PawnType type, Transform parent)
         {
-            Unit tile = Get(type);
+            Pawn tile = Get(type);
             tile.transform.SetParent(parent);
 
             return tile;
