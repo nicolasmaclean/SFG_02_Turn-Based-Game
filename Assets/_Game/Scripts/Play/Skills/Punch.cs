@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Game.Play.Skills
 {
+    [CreateAssetMenu(menuName = "Skills/Punch")]
     public class Punch : SkillSO
     {
         [SerializeField]

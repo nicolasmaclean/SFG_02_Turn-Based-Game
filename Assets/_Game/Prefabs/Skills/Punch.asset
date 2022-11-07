@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a78c9f9e39040d1bfa82246d3f903be, type: 3}
-  m_Name: Repair
+  m_Script: {fileID: 11500000, guid: 852b0670544d4ddabd6020fc9c11147e, type: 3}
+  m_Name: Punch
   m_EditorClassIdentifier: 
   _icon: {fileID: 0}
-  _tags: 2
-  _range: 0
-  _healAmount: 1
+  _tags: 1
+  _range: 1
+  _damage: 2

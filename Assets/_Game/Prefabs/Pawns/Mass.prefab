@@ -144,7 +144,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _initHealth: 2
   _movement: 4
+  _skills:
+  - {fileID: 11400000, guid: b172cf8b14828304db56ebe8c2526213, type: 2}
   _health: 0
   Position: {x: 0, y: 0}
   Name: Mass Mech
-  team: 0
+  Team: 0

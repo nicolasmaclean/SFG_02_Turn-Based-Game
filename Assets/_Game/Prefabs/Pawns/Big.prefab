@@ -144,7 +144,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _initHealth: 4
   _movement: 3
+  _skills:
+  - {fileID: 11400000, guid: 49ea318a989c8ba4187402bb5eed819e, type: 2}
+  - {fileID: 11400000, guid: b172cf8b14828304db56ebe8c2526213, type: 2}
   _health: 0
   Position: {x: 0, y: 0}
   Name: Big Guy Mech
-  team: 0
+  Team: 0

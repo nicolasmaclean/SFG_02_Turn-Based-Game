@@ -183,10 +183,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6a1abc376c9572439d81d9f9f9bfe2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDropZone: 1
   _isNavigable: 1
   _displayName: Ground Tile
+  _type: 0
   _description: No special effect.
-  _position: {x: 0, y: 0}
+  _group: {fileID: 0}
 --- !u!50 &-8121225161628905804
 Rigidbody2D:
   serializedVersion: 4

@@ -26,6 +26,7 @@ namespace Game.Level
 
         protected override void Awake()
         {
+            base.Awake();
             PopulateTiles();
             PopulatePawns();
         }
@@ -45,10 +46,11 @@ namespace Game.Level
                 for (int c = 0; c < 8; c++)
                 {
                     TileType type = tiles[r, c];
+                    
                     Tile tile = TilePalette.Get(type, transform);
-                    tile.Configure(this, r, c);
-
-                    Spaces[r, c] = new Space(tile);
+                    var space = Spaces[r, c] = new Space(tile, new Vector2Int(r, c));
+                    
+                    tile.Configure(this, space);
                 }
             }
 
@@ -146,6 +148,24 @@ namespace Game.Level
             }
         }
         #endregion
+        
+        #region Feedback
+        public void Highlight(HashSet<Vector2Int> tiles)
+        {
+            foreach (var vector in tiles)
+            {
+                Spaces[vector.x, vector.y].Tile.Highlight();
+            }
+        }
+
+        public void Unhighlight(HashSet<Vector2Int> tiles)
+        {
+            foreach (var vector in tiles)
+            {
+                Spaces[vector.x, vector.y].Tile.Unhighlight();
+            }
+        }
+        #endregion
 
         #region Utility
         /// <summary>
@@ -182,7 +202,7 @@ namespace Game.Level
             {
                 if (space.Tile.Type == TileType.Building)
                 {
-                    found.Value = space.Pawn.Position;
+                    found.Value = space.Position;
                     found.Enabled = true;
                 }
                 
@@ -204,7 +224,7 @@ namespace Game.Level
             {
                 if (space.Pawn && space.Pawn.Team == team)
                 {
-                    found.Value = space.Pawn.Position;
+                    found.Value = space.Position;
                     found.Enabled = true;
                 }
                 
@@ -224,9 +244,17 @@ namespace Game.Level
             List<Space> spaces = Spaces.ConvertTo1D().ToList();
             
             List<Pawn> pawns = spaces.Select(space => space.Pawn).ToList();
-            pawns.RemoveAll(pawn => pawn == null);
+            pawns.RemoveAll(pawn => pawn == null || pawn.Team != team);
             
             return pawns;
+        }
+
+        public HashSet<Vector2Int> GetDropZone()
+        {
+            var dropzone = from space in Spaces.ConvertTo1D().ToArray()
+                where space.Tile.IsDropZone
+                select space.Position;
+            return dropzone.ToHashSet();
         }
 
         void SearchNeighbors(Vector2Int position, System.Func<Space, bool> callback)

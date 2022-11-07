@@ -43,6 +43,11 @@ namespace Game.Play.Units
 
         public Team Team;
 
+        void Start()
+        {
+            _health = InitialHealth;
+        }
+
         public void Hurt(int amount)
         {
             _health -= amount;

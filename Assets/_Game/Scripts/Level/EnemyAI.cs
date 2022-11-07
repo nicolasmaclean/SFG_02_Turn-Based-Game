@@ -39,7 +39,6 @@ namespace Game.Level
                     randomMove = inRangeOfSelf.PickRandom();
                     return new TurnData
                     {
-                        OldPosition = pawn.Position,
                         NewPosition = randomMove,
                     };
                 }
@@ -48,7 +47,6 @@ namespace Game.Level
                 randomMove = nextToBuildings.PickRandom();
                 return new TurnData
                 {
-                    OldPosition = pawn.Position,
                     NewPosition = randomMove,
                     Action = pawn.GetSkill(SkillTag.Attack),
                     Target = board.GetAdjacentBuilding(randomMove).Value,
@@ -63,9 +61,13 @@ namespace Game.Level
 
     public struct TurnData
     {
-        public Vector2Int OldPosition;
         public Vector2Int NewPosition;
         public SkillSO Action;
         public Vector2Int Target;
+
+        public override string ToString()
+        {
+            return $"-> {NewPosition}";
+        }
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Gummi;
+using UnityEditor.Graphs;
 
 namespace Game.Level
 {
@@ -18,6 +19,7 @@ namespace Game.Level
         public string DisplayName => _displayName;
         public string Description => _description;
         public bool IsNavigable => _isNavigable;
+        public bool IsDropZone;
         public TileType Type => _type;
         
         [SerializeField]
@@ -33,25 +35,30 @@ namespace Game.Level
         [SerializeField]
         [TextArea(3, 8)]
         string _description = "Description...";
-        
-        [Header("Debug")]
-        [SerializeField, Readonly]
-        Vector2Int _position;
+
+        public Space Space { get; private set; }
+        Vector2Int _position => Space.Position;
 
         public Board Board { get; private set; }
         public CanvasGroup _group;
+        Image[] _imgs;
         
         void Start()
         {
             _group = GetComponent<CanvasGroup>();
+            _imgs = GetComponentsInChildren<Image>();
             AnimateIn();
         }
 
-        public void Configure(Board board, int row, int column)
+        public void Configure(Board board, Space space)
         {
             Board = board;
+            Space = space;
+            int row = _position.x;
+            int column = _position.y;
+            
             name = $"Tile ({ row }, { column })";
-            _position = new Vector2Int(row, column);
+            IsDropZone &= 0 < column && column < 4 && 0 < row && row < 7;
             
             // calculate positions
             int sum  = row + column;
@@ -63,15 +70,19 @@ namespace Game.Level
             // set position
             transform.localPosition = new Vector3(horizontal, vertical, 0);
         }
-        
-        public void OnHoverEnter()
-        {
-            GetComponentInChildren<Image>().color = Color.red;
-        }
 
-        public void OnHoverExit()
+        public void Highlight() => SetColor(Color.yellow);
+        public void Unhighlight() => SetColor(Color.white);
+
+        public void OnHoverEnter() => SetColor(Color.red);
+        public void OnHoverExit() => SetColor(Color.white);
+
+        void SetColor(Color color)
         {
-            GetComponentInChildren<Image>().color = Color.white;
+            foreach (Image img in _imgs)
+            {
+                img.color = color;
+            }
         }
 
         void AnimateIn()

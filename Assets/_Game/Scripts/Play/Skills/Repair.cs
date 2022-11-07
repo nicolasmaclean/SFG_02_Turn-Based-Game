@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game.Play.Skills
 {
-    [CreateAssetMenu(menuName = "Weapons/Repair")]
+    [CreateAssetMenu(menuName = "Skills/Repair")]
     public class Repair : SkillSO
     {
         [SerializeField]

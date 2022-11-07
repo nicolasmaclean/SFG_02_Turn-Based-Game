@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Game.Play.Units;
+using UnityEngine.InputSystem.Interactions;
 
 namespace Game.Level
 {
@@ -8,18 +9,22 @@ namespace Game.Level
         public Tile Tile { get; private set; }
         public Pawn Pawn { get; private set; }
         
-        public Space(Tile tile)
+        public Vector2Int Position { get; }
+        
+        public Space(Tile tile, Vector2Int position)
         {
             Tile = tile;
+            Position = position;
         }
 
-        public void AddPawn(Pawn pawn)
+        public void AddPawn(Pawn pawn, Vector3 offset = default)
         {
             Pawn = pawn;
+            pawn.Position = Position;
             Transform trans = pawn.transform;
             
             trans.SetParent(Tile.transform);
-            trans.localPosition = Vector3.zero;
+            trans.localPosition = offset;
         }
 
         public void RemovePawn()
