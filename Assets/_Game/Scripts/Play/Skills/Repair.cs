@@ -3,7 +3,7 @@ using Game.Level;
 using Game.Play.Units;
 using UnityEngine;
 
-namespace Game.Play.Weapons
+namespace Game.Play.Skills
 {
     [CreateAssetMenu(menuName = "Weapons/Repair")]
     public class Repair : SkillSO

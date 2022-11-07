@@ -1,28 +1,63 @@
-﻿using Gummi.MVC;
+﻿using System;
+using Game.Level;
+using Gummi.MVC;
+using Gummi;
 using UnityEngine;
 using UnityEngine.InputSystem;
 // ReSharper disable Unity.IncorrectMethodSignature
 
 namespace Game.Controllers.Game
 {
+    public enum SubGameState
+    {
+        Deployment = 0, EnemyMove = 1, Player = 2, EnemyAttack = 3,
+    }
+    
     public class GameController : SubController<GameState, GameView>
     {
         [SerializeField]
         PlayerInput _input;
         InputAction _mouse;
-        
+
         [Header("Game State")]
-        [SerializeField, ReadOnly]
+        [SerializeField, Readonly(AppMode.Editor)]
+        SubGameState _state = SubGameState.Deployment;
+        
+        [Header("Debug")]
+        [SerializeField, Readonly]
         Tile _hovering;
         
-        [SerializeField, ReadOnly]
+        [SerializeField, Readonly]
         Tile _selected;
 
         void Start()
         {
             _mouse = _input.actions["Point"];
         }
+
+        public void GoToNextSubState()
+        {
+            // cycle to the next state
+            _state++;
+            if (!Enum.IsDefined(typeof(SubGameState), _state))
+            {
+                _state = 0;
+            }
+        }
         
+        #region Deployment
+        #endregion
+        
+        #region Enemy Move
+        #endregion
+        
+        #region Player
+        #endregion
+        
+        #region Enemy Attack
+        #endregion
+
+        #region Input
         public void OnMouseMove(InputAction.CallbackContext context)
         {
             Vector2 mouse = GetMousePosition();
@@ -83,5 +118,6 @@ namespace Game.Controllers.Game
             Tile tile = hitinfo.rigidbody.gameObject.GetComponent<Tile>();
             return tile;
         }
+        #endregion
     }
 }

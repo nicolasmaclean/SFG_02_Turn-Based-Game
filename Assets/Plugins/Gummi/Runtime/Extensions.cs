@@ -1,5 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 namespace Gummi
 {
@@ -50,6 +55,16 @@ namespace Gummi
 
             return output;
         }
+
+        public static T PickRandom<T>(this List<T> list)
+        {
+            if (list.Count == 0)
+            {
+                throw new System.Exception("List is empty. Unable to pick an element at random.");
+            }
+
+            return list[Random.Range(0, list.Count)];
+        }
     }
 
     public static class ArrayExtensions
@@ -69,6 +84,20 @@ namespace Gummi
             }
 
             return result;
+        }
+
+        public static bool IsInBounds<T>(this T[,] arr, Vector2Int pos)
+        {
+            return pos.x >= 0 && pos.y >= 0 && pos.x < arr.GetLength(0) && pos.y < arr.GetLength(1);
+        }
+    }
+
+    public static class IEnumerableExtensions
+    {
+        public static T PickRandom<T>(this IEnumerable<T> enumerable)
+        {
+            List<T> list = enumerable.ToList();
+            return list.PickRandom();
         }
     }
 

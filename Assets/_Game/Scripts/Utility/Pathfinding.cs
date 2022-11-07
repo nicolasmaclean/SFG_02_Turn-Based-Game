@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using Gummi;
 using UnityEngine;
-using UnityEngine.InputSystem.Interactions;
 
 namespace Game.Utility
 {
@@ -37,16 +36,6 @@ namespace Game.Utility
             return tiles;
         }
 
-        // public static List<Tile> GetPath(bool[,] map, Vector2Int from, Vector2Int to)
-        // {
-        //     return null;
-        // }
-        //
-        // public static int GetDistance(bool[,] map, Vector2Int from, Vector2Int to)
-        // {
-        //     return GetPath(map, from, to).Count;
-        // }
-
         static int[,] Dijkstra(bool[,] map, Vector2Int position)
         {
             // construct default distances matrix
@@ -62,15 +51,9 @@ namespace Game.Utility
             return Dijkstra(map, distances, position);
         }
 
-        static readonly Vector2Int[] CARDINALS = { Vector2Int.down, Vector2Int.left, Vector2Int.up, Vector2Int.right };
+        public static readonly Vector2Int[] DIRECTIONS = { Vector2Int.down, Vector2Int.left, Vector2Int.up, Vector2Int.right };
         static int[,] Dijkstra(bool[,] map, int[,] distances, Vector2Int position)
         {
-            // exit, the initial tile is not navigable
-            if (map[position.x, position.y])
-            {
-                return distances;
-            }
-            
             Queue<Vector2Int> toVisit = new Queue<Vector2Int>();
             toVisit.Enqueue(position);
             distances[position.x, position.y] = 0;
@@ -81,12 +64,12 @@ namespace Game.Utility
                 int newDistance = distances[point.x, point.y] + 1;
 
                 // visit neighbors
-                foreach (Vector2Int offset in CARDINALS)
+                foreach (Vector2Int offset in DIRECTIONS)
                 {
                     Vector2Int nextPosition = point + offset;
                     
                     // skip, this position is out of bounds 
-                    if (!InBounds(nextPosition)) continue;
+                    if (!map.IsInBounds(nextPosition)) continue;
                     
                     // skip, this position is not navigable
                     if (map[nextPosition.x, nextPosition.y]) continue;
@@ -102,11 +85,6 @@ namespace Game.Utility
             }
 
             return distances;
-
-            bool InBounds(Vector2Int pos)
-            {
-                return pos.x >= 0 && pos.y >= 0 && pos.x < map.GetLength(0) && pos.y < map.GetLength(1);
-            }
         }
     }
 }

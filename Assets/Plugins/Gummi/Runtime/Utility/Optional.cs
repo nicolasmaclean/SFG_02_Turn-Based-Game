@@ -18,19 +18,13 @@ namespace Gummi.Utility
     [Serializable]
     public class Optional<T>
     {
-        [SerializeField]
-        bool enabled;
-        
-        [SerializeField]
-        T value;
-
-        public bool Enabled => enabled;
-        public T Value => value;
+        public bool Enabled;
+        public T Value;
 
         public Optional(T initialValue)
         {
-            enabled = true;
-            value = initialValue;
+            Enabled = true;
+            Value = initialValue;
         }
     }
 }

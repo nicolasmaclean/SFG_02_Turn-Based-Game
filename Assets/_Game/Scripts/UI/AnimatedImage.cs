@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Gummi;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,7 +16,7 @@ namespace Game
         [SerializeField]
         float _framesPerSecond = 2f;
         
-        [SerializeField, ReadOnly]
+        [SerializeField, Readonly]
         int _currentFrame;
         
         Image _img;

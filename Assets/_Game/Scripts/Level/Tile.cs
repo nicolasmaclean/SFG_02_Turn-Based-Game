@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Game.Controllers;
 using UnityEngine;
 using UnityEngine.UI;
+using Gummi;
 
-namespace Game
+namespace Game.Level
 {
     [RequireComponent(typeof(CanvasGroup))]
     public class Tile : MonoBehaviour
@@ -18,6 +18,7 @@ namespace Game
         public string DisplayName => _displayName;
         public string Description => _description;
         public bool IsNavigable => _isNavigable;
+        public TileType Type => _type;
         
         [SerializeField]
         bool _isNavigable = true;
@@ -25,16 +26,20 @@ namespace Game
         [Header("Display Data")]
         [SerializeField]
         string _displayName = "Display Name...";
+
+        [SerializeField]
+        TileType _type = TileType.Grass;
         
         [SerializeField]
         [TextArea(3, 8)]
         string _description = "Description...";
         
         [Header("Debug")]
-        [SerializeField, ReadOnly]
+        [SerializeField, Readonly]
         Vector2Int _position;
 
-        CanvasGroup _group;
+        public Board Board { get; private set; }
+        public CanvasGroup _group;
         
         void Start()
         {
@@ -42,8 +47,9 @@ namespace Game
             AnimateIn();
         }
 
-        public void Configure(int row, int column)
+        public void Configure(Board board, int row, int column)
         {
+            Board = board;
             name = $"Tile ({ row }, { column })";
             _position = new Vector2Int(row, column);
             

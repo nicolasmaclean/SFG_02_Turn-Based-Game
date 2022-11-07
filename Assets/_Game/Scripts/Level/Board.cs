@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Play.Units;
 using Game.Utility;
 using Gummi;
 using Gummi.Singletons;
+using Gummi.Utility;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -44,7 +46,7 @@ namespace Game.Level
                 {
                     TileType type = tiles[r, c];
                     Tile tile = TilePalette.Get(type, transform);
-                    tile.Configure(r, c);
+                    tile.Configure(this, r, c);
 
                     Spaces[r, c] = new Space(tile);
                 }
@@ -56,10 +58,10 @@ namespace Game.Level
         void SortTiles()
         {
             // convert to 1D list
-            List<Tile> _tilesLong = Spaces.ConvertTo1D().Select(s => s.Tile).ToList();
+            List<Tile> tilesLong = Spaces.ConvertTo1D().Select(s => s.Tile).ToList();
             
             // sort
-            _tilesLong.Sort((a, b) =>
+            tilesLong.Sort((a, b) =>
             {
                 Vector3 aPos = a.transform.position;
                 Vector3 bPos = b.transform.position;
@@ -76,9 +78,9 @@ namespace Game.Level
             });
             
             // update hierarchy
-            for (int i = 0; i < _tilesLong.Count; i++)
+            for (int i = 0; i < tilesLong.Count; i++)
             {
-                Tile tile = _tilesLong[i];
+                Tile tile = tilesLong[i];
                 tile.transform.SetSiblingIndex(i);
             }
         }
@@ -97,7 +99,7 @@ namespace Game.Level
             foreach (PlacedPawn data in _pawns)
             {
                 Pawn pawn = PawnPalette.Get(data.type);
-                pawn.team = data.team;
+                pawn.Team = data.team;
                 Spaces[data.Position.x, data.Position.y].AddPawn(pawn);
             }
         }
@@ -145,11 +147,12 @@ namespace Game.Level
         }
         #endregion
 
+        #region Utility
         /// <summary>
         /// Get <see cref="bool"/> matrix of tile positions that are un-navigable.
         /// </summary>
         /// <returns></returns>
-        public bool[,] GetNavigableMap()
+        public bool[,] GetNavigableMap(bool includePawns = true)
         {
             Space[,] spaces = Spaces;
             bool[,] res = new bool[spaces.GetLength(0), spaces.GetLength(1)];
@@ -158,18 +161,86 @@ namespace Game.Level
             {
                 for (int c = 0; c < spaces.GetLength(1); c++)
                 {
-                    res[r, c] = !spaces[r, c].Tile.IsNavigable;
+                    res[r, c] = !spaces[r, c].Tile.IsNavigable || (includePawns && spaces[r, c].Pawn);
                 }
             }
 
             return res;
         }
 
-        public List<Tile> GetTilesInRange(Vector2Int position, int range)
+        public HashSet<Vector2Int> GetTilesInRange(Vector2Int position, int range)
         {
             IEnumerable<Vector2Int> tilePositions = Pathfinding.GetTilesInRange(GetNavigableMap(), position, range);
-            return tilePositions.Select(pos => Spaces[pos.x, pos.y].Tile).ToList();
+            return tilePositions.ToHashSet();
+            // return tilePositions.Select(pos => Spaces[pos.x, pos.y].Tile).ToList();
         }
+
+        public Optional<Vector2Int> GetAdjacentBuilding(Vector2Int position)
+        {
+            Optional<Vector2Int> found = new Optional<Vector2Int>(Vector2Int.zero);
+            SearchNeighbors(position, space =>
+            {
+                if (space.Tile.Type == TileType.Building)
+                {
+                    found.Value = space.Pawn.Position;
+                    found.Enabled = true;
+                }
+                
+                return found.Enabled;
+            });
+
+            return found;
+        }
+        
+        public bool HasAdjacentBuilding(Vector2Int position)
+        {
+            return GetAdjacentBuilding(position).Enabled;
+        }
+
+        public Optional<Vector2Int> GetAdjacentPawn(Vector2Int position, Team team)
+        {
+            Optional<Vector2Int> found = new Optional<Vector2Int>(Vector2Int.zero);
+            SearchNeighbors(position, space =>
+            {
+                if (space.Pawn && space.Pawn.Team == team)
+                {
+                    found.Value = space.Pawn.Position;
+                    found.Enabled = true;
+                }
+                
+                return found.Enabled;
+            });
+
+            return found;
+        }
+        
+        public bool HasAdjacentPawn(Vector2Int position, Team team)
+        {
+            return GetAdjacentPawn(position, team).Enabled;
+        }
+
+        public List<Pawn> Pawns(Team team)
+        {
+            List<Space> spaces = Spaces.ConvertTo1D().ToList();
+            
+            List<Pawn> pawns = spaces.Select(space => space.Pawn).ToList();
+            pawns.RemoveAll(pawn => pawn == null);
+            
+            return pawns;
+        }
+
+        void SearchNeighbors(Vector2Int position, System.Func<Space, bool> callback)
+        {
+            foreach (var offset in Pathfinding.DIRECTIONS)
+            {
+                Vector2Int neighborPosition = position + offset;
+                if (!Spaces.IsInBounds(neighborPosition)) continue;;
+
+                Space neighbor = Spaces[neighborPosition.x, neighborPosition.y];
+                if (callback.Invoke(neighbor)) break;
+            }
+        }
+        #endregion
     }
 
     [System.Serializable]

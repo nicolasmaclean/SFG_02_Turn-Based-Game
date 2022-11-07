@@ -4,16 +4,20 @@ using Game.Play.Units;
 using Game.Utility;
 using UnityEngine;
 
-namespace Game.Play.Weapons
+namespace Game.Play.Skills
 {
     public class Punch : SkillSO
     {
         [SerializeField]
-        int damage = 1;
+        int _damage = 1;
         
         public override void Activate(Pawn user, Board board, int row, int column)
         {
-            throw new System.NotImplementedException();
+            Pawn target = board.Spaces[row, column].Pawn;
+            if (target)
+            {
+                target.Hurt(_damage);
+            }
         }
     }
 }

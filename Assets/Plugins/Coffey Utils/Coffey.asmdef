@@ -1,7 +1,9 @@
 {
     "name": "Coffey",
     "rootNamespace": "Coffey",
-    "references": [],
+    "references": [
+        "GUID:6dd5d66fb4371c84db1b501883baef20"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

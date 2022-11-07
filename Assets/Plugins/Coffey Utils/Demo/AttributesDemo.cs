@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Gummi;
 
 namespace Coffey_Utils.Demo
 {
@@ -7,10 +8,10 @@ namespace Coffey_Utils.Demo
     {
         [Header("Read Only")]
         [SerializeField] private float _regularValue;
-        [SerializeField, ReadOnly] private float _readOnlyValue;
+        [SerializeField, Readonly] private float _readOnlyValue;
 
         [SerializeField] private List<GameObject> _regularList;
-        [SerializeField, ReadOnly] private List<GameObject> _readOnlyList;
+        [SerializeField, Readonly] private List<GameObject> _readOnlyList;
 
         [Header("Ranged Floats")]
         [SerializeField, MinMaxRange(-1, 2)] private RangedFloat _customMinMaxRangedFloat = new RangedFloat(1); // Custom MinMaxRange
