@@ -58,12 +58,12 @@ namespace Gummi
 
         public static T PickRandom<T>(this List<T> list)
         {
-            if (list.Count == 0)
+            return list.Count switch
             {
-                throw new System.Exception("List is empty. Unable to pick an element at random.");
-            }
-
-            return list[Random.Range(0, list.Count)];
+                0 => throw new System.Exception("List is empty. Unable to pick an element at random."),
+                1 => list[0],
+                _ => list[Random.Range(0, list.Count)]
+            };
         }
     }
 

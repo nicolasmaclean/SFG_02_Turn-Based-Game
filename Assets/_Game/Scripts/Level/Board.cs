@@ -195,6 +195,21 @@ namespace Game.Level
             // return tilePositions.Select(pos => Spaces[pos.x, pos.y].Tile).ToList();
         }
 
+        public List<Vector2Int> GetAdjacentBuildings(Vector2Int position)
+        {
+            List<Vector2Int> buildings = new List<Vector2Int>();
+            SearchNeighbors(position, space =>
+            {
+                if (space.Tile && space.Tile.Type == TileType.Building)
+                {
+                    buildings.Add(space.Position);
+                }
+                return false;
+            });
+
+            return buildings;
+        }
+        
         public Optional<Vector2Int> GetAdjacentBuilding(Vector2Int position)
         {
             Optional<Vector2Int> found = new Optional<Vector2Int>(Vector2Int.zero);
@@ -215,6 +230,21 @@ namespace Game.Level
         public bool HasAdjacentBuilding(Vector2Int position)
         {
             return GetAdjacentBuilding(position).Enabled;
+        }
+
+        public List<Vector2Int> GetAdjacentPawns(Vector2Int position, Team team)
+        {
+            List<Vector2Int> pawns = new List<Vector2Int>();
+            SearchNeighbors(position, space =>
+            {
+                if (space.Pawn && space.Pawn.Team == team)
+                {
+                    pawns.Add(space.Position);
+                }
+                return false;
+            });
+
+            return pawns;
         }
 
         public Optional<Vector2Int> GetAdjacentPawn(Vector2Int position, Team team)

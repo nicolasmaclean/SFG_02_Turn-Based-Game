@@ -159,16 +159,17 @@ namespace Game.Controllers.Game
             foreach (Pawn enemy in _board.Pawns(Team.Enemy))
             {
                 // calculate next turn
-                TurnData plan = EnemyAI.PlanTurn(_board, enemy);
+                TurnData turn = EnemyAI.PlanTurn(_board, enemy);
                 
                 // move enemy
                 Vector2Int move = enemy.Position;
                 _board.Spaces[move.x, move.y].RemovePawn();
                 
-                move = plan.NewPosition;
+                move = turn.Move;
                 _board.Spaces[move.x, move.y].AddPawn(enemy);
                 
                 // TODO: show player the skill being used
+                // and store skill used to attack laters
             }
             
             GoToNextSubState();
@@ -206,7 +207,7 @@ namespace Game.Controllers.Game
         #region Enemy Attack
         void AttackEnter()
         {
-            
+            UI.HidePlayerTurn();
         }
         #endregion
 

@@ -58,10 +58,15 @@ namespace Game.Play.Units
             _health += amount;
         }
 
-        public SkillSO GetSkill(SkillTag skillTag)
+        public List<SkillSO> GetSkills(SkillTag skillTag)
         {
             List<SkillSO> skills = _skills.ToList();
-            return skills.FindAll(skill => skill.Tags.HasFlag(skillTag)).PickRandom();
+            return skills.FindAll(skill => skill.Tags.HasFlag(skillTag));
+        }
+        
+        public SkillSO GetSkill(SkillTag skillTag)
+        {
+            return GetSkills(skillTag).PickRandom();
         }
     }
 }

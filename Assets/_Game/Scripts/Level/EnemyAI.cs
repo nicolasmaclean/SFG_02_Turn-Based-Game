@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿// AI idea from https://www.reddit.com/r/gamedev/comments/99cmnh/comment/e4mzgmv/?utm_source=share&utm_medium=web2x&context=3
+
+using System.Collections.Generic;
 using Game.Play.Units;
 using Game.Play.Skills;
 using Gummi;
-using Gummi.Utility;
 using UnityEngine;
+using UnityEngine.InputSystem.Interactions;
 
 namespace Game.Level
 {
@@ -12,6 +13,9 @@ namespace Game.Level
     {
         public static TurnData PlanTurn(Board board, Pawn pawn)
         {
+            // attempt a kill
+            // do the most damage
+            // move towards player
             HashSet<Vector2Int> inRangeOfSelf = board.GetTilesInRange(pawn.Position, pawn.Movement);
 
             // get all tiles this unit AND a player unit could move to
@@ -23,51 +27,59 @@ namespace Game.Level
                 
                 intersection.UnionWith(inRangeOfPlayer);
             }
-            
-            // player units are too far
-            // time to wreck shit up
+
+            // default possible moves to all
             if (intersection.Count == 0)
             {
-                // get buildings that we can attack
-                HashSet<Vector2Int> nextToBuildings = board.GetTilesInRange(pawn.Position, pawn.Movement);
-                nextToBuildings.RemoveWhere(position => !board.HasAdjacentBuilding(position));
-                
-                // there are no buildings :((
-                Vector2Int randomMove;
-                if (nextToBuildings.Count == 0)
-                {
-                    randomMove = inRangeOfSelf.PickRandom();
-                    return new TurnData
-                    {
-                        NewPosition = randomMove,
-                    };
-                }
-                
-                // attack!
-                randomMove = nextToBuildings.PickRandom();
-                return new TurnData
-                {
-                    NewPosition = randomMove,
-                    Action = pawn.GetSkill(SkillTag.Attack),
-                    Target = board.GetAdjacentBuilding(randomMove).Value,
-                };
+                intersection = inRangeOfSelf;
             }
             
-            // TODO: attack player??
+            Effective effective = Effective.None;
+            TurnData turn = new TurnData
+            {
+                Move = pawn.Position,
+                Skill = null,
+            };
             
-            return new TurnData();
+            // try all of the skills
+            foreach (var skill in pawn.GetSkills(SkillTag.Attack))
+            {
+                // try all the moves
+                foreach (Vector2Int position in intersection)
+                {
+                    Vector2Int target = skill.Evaluate(board, pawn, position, out Effective eff);
+                    
+                    // ignore, this move is not as effective
+                    if (!eff.Compare(effective)) continue;
+
+                    effective = eff;
+                    turn.Skill = skill;
+                    turn.Move = position;
+                    turn.Target = target;
+                }
+            }
+
+            // don't use skill if it doesn't help
+            if (effective == Effective.None)
+            {
+                turn.Skill = null;
+                
+                // make a random move
+                turn.Move = inRangeOfSelf.PickRandom();
+            }
+
+            Debug.Log($"Planned Turn: { effective }\n" +
+                             $"{ pawn.Position } -> { turn.Move }\n" +
+                             $"use { turn.Skill } on { turn.Target }"
+            );
+            return turn;
         }
     }
 
     public struct TurnData
     {
-        public Vector2Int NewPosition;
-        public SkillSO Action;
+        public Vector2Int Move;
+        public SkillSO Skill;
         public Vector2Int Target;
-
-        public override string ToString()
-        {
-            return $"-> {NewPosition}";
-        }
     }
 }

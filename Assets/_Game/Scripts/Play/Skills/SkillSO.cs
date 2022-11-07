@@ -12,9 +12,15 @@ namespace Game.Play.Skills
     {
         Attack = 1, Healing = 2, Movement = 4, Tactical = 8,
     }
+
+    public enum Effective
+    {
+        Kill = 0, DamageUnit = 1, DamageBuilding = 2, Move = 3, None = 4,
+    }
     
     public abstract class SkillSO : ScriptableObject
     {
+        
         public Sprite Icon => _icon;
         public SkillTag Tags => _tags;
         
@@ -28,8 +34,38 @@ namespace Game.Play.Skills
         [SerializeField]
         protected int _range;
 
-        public abstract void Activate(Pawn user, Board board, int row, int column);
+        public virtual void Activate(Pawn user, Board board, Vector2Int target)
+        {
+            Vector2Int delta = target - user.Position;
+            float distance = delta.x + delta.y;
 
-        // public List<Tile> GetTilesInRange(Board board, Vector2Int position) => board.GetTilesInRange(position, _range);
+            if (distance > _range)
+            {
+                throw new System.Exception($"{name} was activated with a target that is out of range.");
+            }
+        }
+
+        public Vector2Int Evaluate(Board board, Pawn user, Vector2Int position)
+        {
+            return Evaluate(board, user, position, out _);
+        }
+        
+        public abstract Vector2Int Evaluate(Board board, Pawn user, Vector2Int pos, out Effective effectiveness);
+    }
+    
+    public static class EffectiveExtensions
+    {
+        public static bool Compare(this Effective a, Effective b)
+        {
+            // pick random, if equal in priority
+            if  (a == b ||
+                 (a == Effective.DamageBuilding && b == Effective.DamageUnit) ||
+                 (b == Effective.DamageBuilding && a == Effective.DamageUnit))
+            {
+                return Random.Range(0, 2) == 1;
+            }
+
+            return a < b;
+        }
     }
 }

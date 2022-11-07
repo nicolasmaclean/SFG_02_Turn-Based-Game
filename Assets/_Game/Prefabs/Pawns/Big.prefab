@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e107f1aa856750c408075d8db1eb8058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _initHealth: 4
+  _initHealth: 3
   _movement: 3
   _skills:
   - {fileID: 11400000, guid: 49ea318a989c8ba4187402bb5eed819e, type: 2}

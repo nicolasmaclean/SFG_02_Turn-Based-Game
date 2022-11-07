@@ -11,9 +11,16 @@ namespace Game.Play.Skills
         [SerializeField]
         int _healAmount;
         
-        public override void Activate(Pawn user, Board board, int row, int column)
+        public override void Activate(Pawn user, Board board, Vector2Int target)
         {
+            base.Activate(user, board, target);
             user.Heal(_healAmount);
+        }
+
+        public override Vector2Int Evaluate(Board board, Pawn user, Vector2Int pos, out Effective effectiveness)
+        {
+            effectiveness = Effective.None;
+            return user.Position;
         }
     }
 }

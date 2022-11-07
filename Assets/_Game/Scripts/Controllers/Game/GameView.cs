@@ -3,12 +3,17 @@ using Game.Level;
 using Gummi.MVC;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Game.Controllers.Game
 {
     public class GameView : UIView
     {
+        [Header("Player Turn")]
+        [SerializeField]
+        Button _endTurn;
+        
         [Header("Selection")]
         [SerializeField]
         TMP_Text _txt_selection;
@@ -19,6 +24,7 @@ namespace Game.Controllers.Game
         void Start()
         {
             HideSelectionCursor();
+            HidePlayerTurn();
         }
 
         public void Deselect()
@@ -42,6 +48,16 @@ namespace Game.Controllers.Game
         {
             _selectionCursor.gameObject.SetActive(false);
             _txt_selection.text = string.Empty;
+        }
+
+        public void ShowPlayerTurn()
+        {
+            _endTurn.gameObject.SetActive(true);
+        }
+
+        public void HidePlayerTurn()
+        {
+            _endTurn.gameObject.SetActive(false);
         }
     }
 }
