@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game
 {
-    [CreateAssetMenu(menuName = "Animation/UI Image")]
+    [CreateAssetMenu(menuName = "UI/Sprite Animation")]
     public class AnimationSO : ScriptableObject
     {
         public Sprite[] Frames;

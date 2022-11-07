@@ -67,7 +67,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 700157344, guid: 9c372478f01e9e44597ff29a90eac3a9, type: 3}
+  m_Sprite: {fileID: -253193402, guid: 43c1bdec64e3b9549b4dde8e5093582f, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce97814bf0f93224cbf8b285b5073f4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _anim: {fileID: 11400000, guid: d90617b1430bd8347b2f5654c3387645, type: 2}
+  _anim: {fileID: 11400000, guid: 627fb8880d6dc34499b9ee13c9c56a2e, type: 2}
   _framesPerSecond: 2
   _currentFrame: 0
 --- !u!1 &8723770719813701481
@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 8723770719813701480}
   - component: {fileID: 8690157068443986950}
   m_Layer: 5
-  m_Name: Big
+  m_Name: Mass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -142,9 +142,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e107f1aa856750c408075d8db1eb8058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _initHealth: 4
-  _movement: 3
+  _initHealth: 2
+  _movement: 4
   _health: 0
   Position: {x: 0, y: 0}
-  Name: Big Guy Mech
+  Name: Mass Mech
   team: 0

@@ -12,39 +12,6 @@ namespace Game.Level
 {
     public class Board : Singleton<Board>
     {
-        Transform GrpTiles
-        {
-            get
-            {
-                if (!_grpTiles)
-                {
-                    _grpTiles = new GameObject("GRP_Tiles").transform;
-                    _grpTiles.SetParent(transform, worldPositionStays: false);
-                }
-
-                return _grpTiles;
-            }
-        }
-        [SerializeField, HideInInspector]
-        Transform _grpTiles;
-        
-        Transform GrpPawns
-        {
-            get
-            {
-                if (!_grpPawns)
-                {
-                    _grpPawns = new GameObject("GRP_Pawns").transform;
-                    _grpPawns.SetParent(transform, worldPositionStays: false);
-                    GrpTiles.SetSiblingIndex(0);
-                }
-
-                return _grpPawns;
-            }
-        }
-        [SerializeField, HideInInspector]
-        Transform _grpPawns;
-
         public Space[,] Spaces { get; private set; }
 
         [Header("Layout")]
@@ -76,7 +43,7 @@ namespace Game.Level
                 for (int c = 0; c < 8; c++)
                 {
                     TileType type = tiles[r, c];
-                    Tile tile = TilePalette.Get(type, GrpTiles);
+                    Tile tile = TilePalette.Get(type, transform);
                     tile.Configure(r, c);
 
                     Spaces[r, c] = new Space(tile);
@@ -129,7 +96,7 @@ namespace Game.Level
 
             foreach (PlacedPawn data in _pawns)
             {
-                Pawn pawn = PawnPalette.Get(data.type, GrpPawns);
+                Pawn pawn = PawnPalette.Get(data.type);
                 pawn.team = data.team;
                 Spaces[data.Position.x, data.Position.y].AddPawn(pawn);
             }
@@ -141,16 +108,14 @@ namespace Game.Level
             // clean up children, in case the Spaces pointer is broken
             if (Spaces == null)
             {
-                DestroyImmediate(GrpTiles.gameObject);
-                DestroyImmediate(GrpPawns.gameObject);
+                transform.DestroyChildrenImmediate();
                 return;
             }
             
             // short-circuit clear
             if (includeTiles && includePawns)
             {
-                DestroyImmediate(GrpTiles.gameObject);
-                DestroyImmediate(GrpPawns.gameObject);
+                transform.DestroyChildrenImmediate();
                 Spaces = null;
                 return;
             }

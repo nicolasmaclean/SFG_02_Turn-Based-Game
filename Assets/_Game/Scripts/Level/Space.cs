@@ -17,7 +17,8 @@ namespace Game.Level
         {
             Pawn = pawn;
             Transform trans = pawn.transform;
-            trans.SetParent(Tile.transform, worldPositionStays: false);
+            
+            trans.SetParent(Tile.transform);
             trans.localPosition = Vector3.zero;
         }
 

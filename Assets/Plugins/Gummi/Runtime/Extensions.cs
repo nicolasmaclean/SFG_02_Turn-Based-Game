@@ -71,4 +71,16 @@ namespace Gummi
             return result;
         }
     }
+
+    public static class TransformExtensions
+    {
+        public static void DestroyChildrenImmediate(this Transform transform)
+        {
+            for (int i = transform.childCount - 1; i >= 0; i--)
+            {
+                Transform child = transform.GetChild(i);
+                Object.DestroyImmediate(child.gameObject);
+            }
+        }
+    }
 }

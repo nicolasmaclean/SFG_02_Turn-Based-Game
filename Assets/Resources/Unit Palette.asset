@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _bigMech: {fileID: 8690157068443986950, guid: e219db0a29b3ed34d86eb9b165478314,
     type: 3}
-  _massMech: {fileID: 8690157068443986950, guid: e219db0a29b3ed34d86eb9b165478314,
+  _massMech: {fileID: 8690157068443986950, guid: ea9df7d197aec27479eee2007f982813,
     type: 3}
