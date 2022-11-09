@@ -2837,6 +2837,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _endTurn: {fileID: 6297229158111423655}
+  _grp_turn: {fileID: 0}
+  _txt_turn: {fileID: 6297229158979903552}
   _txt_selection: {fileID: 8027074037556446233}
   _selectionCursor: {fileID: 8883188691566201695}
 --- !u!1 &6297229158787771366

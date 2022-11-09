@@ -41,6 +41,10 @@ namespace Game.Controllers.Game
 
         [SerializeField, Readonly]
         List<Pawn> _pawnsToDeploy;
+
+        [Header("Player Turn")]
+        [SerializeField, Readonly(AppMode.Editor)]
+        int _turnsLeft = 5;
         
         [Header("Debug")]
         [SerializeField, Readonly]
@@ -55,6 +59,7 @@ namespace Game.Controllers.Game
         {
             _mouse = _input.actions["Point"];
             EnterState();
+            UI.UpdateTurn(_turnsLeft);
         }
 
         public void GoToNextSubState()
@@ -63,7 +68,7 @@ namespace Game.Controllers.Game
             var state = _state + 1;
             if (!Enum.IsDefined(typeof(SubGameState), state))
             {
-                state = 0;
+                state = SubGameState.EnemyMove;
             }
             
             GoToSubState(state);
@@ -81,11 +86,24 @@ namespace Game.Controllers.Game
         {
             switch (_state)
             {
-                case SubGameState.Deployment: DeployEnter(); break;
-                case SubGameState.EnemyMove: MoveEnter(); break;
-                case SubGameState.Player: break;
-                case SubGameState.EnemyAttack: AttackEnter(); break;
-                default: break;
+                case SubGameState.Deployment:
+                    DeployEnter();
+                    break;
+                
+                case SubGameState.EnemyMove:
+                    MoveEnter();
+                    break;
+                
+                case SubGameState.Player: 
+                    PlayerEnter();
+                    break;
+                
+                case SubGameState.EnemyAttack:
+                    if (PlayerDone()) break;
+                    AttackEnter(); break;
+                
+                default:
+                    break;
             }
         }
         
@@ -177,6 +195,11 @@ namespace Game.Controllers.Game
         #endregion
         
         #region Player
+        void PlayerEnter()
+        {
+            UI.ShowPlayerTurn();
+        }
+        
         void PlayerHover(Tile tile)
         {
             // exit, hover has not changed
@@ -202,12 +225,42 @@ namespace Game.Controllers.Game
             Selection.objects = new Object[] { tile.gameObject };
             #endif
         }
+
+        bool PlayerDone()
+        {
+            _turnsLeft--;
+            UI.UpdateTurn(_turnsLeft);
+            if (_turnsLeft > 0)
+            {
+                return false;
+            }
+
+            root.ChangeController(GameState.Win);
+            return true;
+
+        }
         #endregion
         
         #region Enemy Attack
         void AttackEnter()
         {
-            UI.HidePlayerTurn();
+            // foreach (Pawn enemy in _board.Pawns(Team.Enemy))
+            // {
+            //     // calculate next turn
+            //     TurnData turn = EnemyAI.PlanTurn(_board, enemy);
+            //     
+            //     // move enemy
+            //     Vector2Int move = enemy.Position;
+            //     _board.Spaces[move.x, move.y].RemovePawn();
+            //     
+            //     move = turn.Move;
+            //     _board.Spaces[move.x, move.y].AddPawn(enemy);
+            //     
+            //     // TODO: show player the skill being used
+            //     // and store skill used to attack laters
+            // }
+            
+            GoToNextSubState();
         }
         #endregion
 

@@ -3,7 +3,6 @@ using Game.Level;
 using Gummi.MVC;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Game.Controllers.Game
@@ -13,6 +12,12 @@ namespace Game.Controllers.Game
         [Header("Player Turn")]
         [SerializeField]
         Button _endTurn;
+
+        [SerializeField]
+        GameObject _grp_turn;
+        
+        [SerializeField]
+        TMP_Text _txt_turn;
         
         [Header("Selection")]
         [SerializeField]
@@ -25,6 +30,11 @@ namespace Game.Controllers.Game
         {
             HideSelectionCursor();
             HidePlayerTurn();
+        }
+
+        public void UpdateTurn(int turn)
+        {
+            _txt_turn.text = turn.ToString();
         }
 
         public void Deselect()
