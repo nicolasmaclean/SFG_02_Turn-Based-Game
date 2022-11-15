@@ -49,7 +49,6 @@ namespace Game.Play.Skills
                     int targetHealth = board.Spaces[target.x, target.y].Pawn.Health;
                     if (targetHealth <= _damage)
                     {
-                        Debug.Log(target);
                         effectiveness = Effective.Kill;
                         return target;
                     }
@@ -72,14 +71,10 @@ namespace Game.Play.Skills
                 effectiveness = Effective.DamageBuilding;
                 return buildings.PickRandom();
             }
-
-            log = false;
             
             // no-op
             effectiveness = Effective.None;
             return Vector2Int.zero;
         }
-
-        static bool log = true;
     }
 }
