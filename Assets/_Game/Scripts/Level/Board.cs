@@ -18,7 +18,7 @@ namespace Game.Level
 
         [Header("Layout")]
         [SerializeField]
-        TextAsset _tileData;
+        MapSO _tileData;
 
         [SerializeField, FormerlySerializedAs("_units")]
         [NonReorderable]
@@ -97,8 +97,6 @@ namespace Game.Level
         [Button(Label = "Create Tiles", Mode = ButtonMode.NotInPlayMode)]
         void PopulateTiles()
         {
-            TileType[,] tiles = MapData.ReadTileTypes(_tileData);
-            
             Clear();
             
             // create tile instances
@@ -107,7 +105,7 @@ namespace Game.Level
             {
                 for (int c = 0; c < 8; c++)
                 {
-                    TileType type = tiles[r, c];
+                    TileType type = _tileData[r, c];
                     
                     Tile tile = TilePalette.Get(type, transform);
                     var space = Spaces[r, c] = new Space(tile, new Vector2Int(r, c));
