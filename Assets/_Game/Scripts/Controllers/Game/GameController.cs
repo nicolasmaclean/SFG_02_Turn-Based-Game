@@ -25,6 +25,8 @@ namespace Game.Controllers.Game
     public class GameController : SubController<GameState, GameView>
     {
         #region Variables
+        public static int Energy = 7; 
+            
         [SerializeField]
         PlayerInput _input;
         InputAction _mouse;
@@ -98,6 +100,7 @@ namespace Game.Controllers.Game
                     break;
                 
                 case SubGameState.EnemyMove:
+                    if (AttackExit()) break;
                     MoveEnter();
                     break;
                 
@@ -321,13 +324,24 @@ namespace Game.Controllers.Game
                 Pawn em = kvp.Key;
                 TurnData turn = kvp.Value;
 
-                turn.Skill.Activate(em, _board, turn.Target);
+                turn.Skill?.Activate(em, _board, turn.Target);
                 
                 // TODO: animate the attacks
                 // show the enemy (and skill) active
             }
             
             GoToNextSubState();
+        }
+
+        bool AttackExit()
+        {
+            if (Energy > 0 && _board.Pawns(Team.Player).Count > 0)
+            {
+                return false;
+            }
+            
+            root.ChangeController(GameState.Lose);
+            return true;
         }
         #endregion
 

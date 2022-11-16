@@ -112,4 +112,12 @@ namespace Gummi
             }
         }
     }
+
+    public static class Array2DExtensions
+    {
+        public static T Get<T>(this T[,] arr, Vector2Int i)
+        {
+            return arr[i.x, i.y];
+        }
+    }
 }

@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Level;
 using Game.Play.Skills;
 using Gummi;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Game.Play.Units
 {
@@ -48,13 +48,16 @@ namespace Game.Play.Units
             _health = InitialHealth;
         }
 
-        public void Hurt(int amount)
+        public bool Hurt(int amount)
         {
             _health -= amount;
             if (_health <= 0)
             {
                 Kill();
+                return true;
             }
+
+            return false;
         }
 
         public void Kill()

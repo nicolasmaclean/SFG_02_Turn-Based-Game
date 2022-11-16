@@ -39,17 +39,17 @@ namespace Game.Level
             Pawn pawn      = space.Pawn;
             
             // damage tile
-            if (tile)
-            {
-                tile.Damage(damage);
-                return;
-            }
+            tile.Damage(damage);
             
             // there is no pawn to damage/push
             if (!pawn) return;
 
             // hurt pawn
-            pawn.Hurt(damage);
+            if (pawn.Hurt(damage))
+            {
+                space.RemovePawn();
+                pawn = null;
+            }
                 
             // get next position
             Vector2Int to = pos - from;
@@ -84,7 +84,7 @@ namespace Game.Level
 
             if (pawn)
             {
-                pawn.Hurt(1);
+                if (pawn.Hurt(1)) space.RemovePawn();
             }
             else if (tile)
             {

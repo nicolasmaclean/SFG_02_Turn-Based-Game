@@ -3,6 +3,7 @@ using Game.Level;
 using Game.Play.Units;
 using Gummi;
 using UnityEngine;
+using UnityEngine.InputSystem.Interactions;
 
 namespace Game.Play.Skills
 {
@@ -15,7 +16,7 @@ namespace Game.Play.Skills
         public override void Activate(Pawn user, Board board, Vector2Int target)
         {
             base.Activate(user, board, target);
-            board.Hit(user.Position, target, _damage);
+            board.Hit(target, user.Position, _damage);
         }
 
         public override Vector2Int Evaluate(Board board, Pawn user, Vector2Int pos, out Effective effectiveness)

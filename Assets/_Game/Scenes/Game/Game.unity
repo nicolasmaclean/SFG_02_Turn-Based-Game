@@ -7540,7 +7540,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   root: {fileID: 0}
-  ui: {fileID: 0}
+  ui: {fileID: 6675209980442760843}
 --- !u!4 &978310785
 Transform:
   m_ObjectHideFlags: 0
@@ -10593,6 +10593,7 @@ MonoBehaviour:
   _turnsLeft: 5
   _hovering: {fileID: 0}
   _selected: {fileID: 0}
+  _selectedSkill: {fileID: 0}
 --- !u!4 &1367941656
 Transform:
   m_ObjectHideFlags: 0

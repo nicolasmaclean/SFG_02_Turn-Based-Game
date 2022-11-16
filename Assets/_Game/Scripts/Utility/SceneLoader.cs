@@ -26,6 +26,7 @@ namespace Game.Utility
         public static void Quit()
         {
             Debug.Log("Quitting application...");
+            Application.Quit();
         }
     }
 }
