@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23eec79334aa4f478922ce02f1703e16, type: 3}
   m_Name: Batman
   m_EditorClassIdentifier: 
-  Normal: {fileID: 0}
-  Hurt: {fileID: 0}
-  Blink: {fileID: 0}
+  Normal: {fileID: 21300000, guid: dfd951c3279a51646a9b2aaab6d54892, type: 3}
+  Hurt: {fileID: 21300000, guid: 02fb610ec717f8c429a5df182cc990ac, type: 3}
+  Blink: {fileID: 11400000, guid: a6e6bfb5d3499c1479076cdfbafdbb5d, type: 2}
