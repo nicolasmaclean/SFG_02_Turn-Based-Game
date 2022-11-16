@@ -36,6 +36,12 @@ namespace Game.Utility
             return tiles;
         }
 
+        public static int GetDistance(bool[,] map, Vector2Int from, Vector2Int to)
+        {
+            int[,] distances = Dijkstra(map, from);
+            return distances[to.x, to.y];
+        }
+
         static int[,] Dijkstra(bool[,] map, Vector2Int position)
         {
             // construct default distances matrix

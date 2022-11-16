@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Gummi;
-using UnityEditor.Graphs;
 
 namespace Game.Level
 {
@@ -21,6 +19,7 @@ namespace Game.Level
         public bool IsNavigable => _isNavigable;
         public bool IsDropZone;
         public TileType Type => _type;
+        public bool CanBeOccupied => IsNavigable && !Space.Pawn;
         
         [SerializeField]
         bool _isNavigable = true;
@@ -70,6 +69,8 @@ namespace Game.Level
             // set position
             transform.localPosition = new Vector3(horizontal, vertical, 0);
         }
+
+        public void Damage(int amount) { }
 
         public void Highlight() => SetColor(Color.yellow);
         public void Unhighlight() => SetColor(Color.white);

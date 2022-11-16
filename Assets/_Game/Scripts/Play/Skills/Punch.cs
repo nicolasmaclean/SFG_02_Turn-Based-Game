@@ -1,11 +1,8 @@
 ﻿using System.Collections.Generic;
 using Game.Level;
 using Game.Play.Units;
-using Game.Utility;
 using Gummi;
 using UnityEngine;
-using UnityEngine.UIElements;
-using Space = Game.Level.Space;
 
 namespace Game.Play.Skills
 {
@@ -18,24 +15,7 @@ namespace Game.Play.Skills
         public override void Activate(Pawn user, Board board, Vector2Int target)
         {
             base.Activate(user, board, target);
-            
-            Pawn pawn = board.Spaces[target.x, target.y].Pawn;
-            if (pawn)
-            {
-                pawn.Hurt(_damage);
-                
-                // TODO: board.knockback
-                // should push unit back, if not blocked by another tile/unit
-                // if there is a tile/unit, apply damage and don't move self
-                
-                return;
-            }
-
-            Tile tile = board.Spaces[target.x, target.y].Tile;
-            if (tile)
-            {
-                // hurt tile
-            }
+            board.Hit(user.Position, target, _damage);
         }
 
         public override Vector2Int Evaluate(Board board, Pawn user, Vector2Int pos, out Effective effectiveness)

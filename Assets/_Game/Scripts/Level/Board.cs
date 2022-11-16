@@ -30,6 +30,68 @@ namespace Game.Level
             PopulateTiles();
             PopulatePawns();
         }
+        
+        #region Combat
+        public void Hit(Vector2Int pos, Vector2Int from, int damage)
+        {
+            Space space    = Spaces[pos.x, pos.y];
+            Tile tile      = space.Tile;
+            Pawn pawn      = space.Pawn;
+            
+            // damage tile
+            if (tile)
+            {
+                tile.Damage(damage);
+                return;
+            }
+            
+            // there is no pawn to damage/push
+            if (!pawn) return;
+
+            // hurt pawn
+            pawn.Hurt(damage);
+                
+            // get next position
+            Vector2Int to = pos - from;
+            to.Clamp(-Vector2Int.one, Vector2Int.one);
+            to += pos;
+            
+            // case: push off edge
+            // exit, this isn't allowed
+            if (!InBounds(to))
+            {
+                return;
+            }
+                
+            // case: move to the next tile
+            Space next = Spaces[to.x, to.y];
+            if (pawn && next.Tile.CanBeOccupied)
+            {
+                space.RemovePawn();
+                next.AddPawn(pawn);
+                return;
+            }
+                
+            // case: tile is occupied
+            // damage the next tile and the pawn
+            Hit(next);
+        }
+
+        static void Hit(Space space)
+        {
+            Tile tile      = space.Tile;
+            Pawn pawn      = space.Pawn;
+
+            if (pawn)
+            {
+                pawn.Hurt(1);
+            }
+            else if (tile)
+            {
+                tile.Damage(1);
+            }
+        }
+        #endregion
 
         #region Generation
         [Button(Label = "Create Tiles", Mode = ButtonMode.NotInPlayMode)]
@@ -168,6 +230,11 @@ namespace Game.Level
         #endregion
 
         #region Utility
+        public static bool InBounds(Vector2Int pos)
+        {
+            return pos.x is > 0 and < 8 && pos.y is > 0 and < 8;
+        }
+
         /// <summary>
         /// Get <see cref="bool"/> matrix of tile positions that are un-navigable.
         /// </summary>
@@ -186,6 +253,11 @@ namespace Game.Level
             }
 
             return res;
+        }
+
+        public int GetDistance(Vector2Int from, Vector2Int to)
+        {
+            return Pathfinding.GetDistance(GetNavigableMap(), from, to);
         }
 
         public HashSet<Vector2Int> GetTilesInRange(Vector2Int position, int range)

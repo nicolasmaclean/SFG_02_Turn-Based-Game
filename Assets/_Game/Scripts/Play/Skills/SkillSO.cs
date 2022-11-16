@@ -20,7 +20,7 @@ namespace Game.Play.Skills
     
     public abstract class SkillSO : ScriptableObject
     {
-        
+        public int Range => _range;
         public Sprite Icon => _icon;
         public SkillTag Tags => _tags;
         

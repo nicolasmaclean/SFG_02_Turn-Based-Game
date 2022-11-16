@@ -51,6 +51,16 @@ namespace Game.Play.Units
         public void Hurt(int amount)
         {
             _health -= amount;
+            if (_health <= 0)
+            {
+                Kill();
+            }
+        }
+
+        public void Kill()
+        {
+            _health = 0;
+            Destroy(gameObject);
         }
 
         public void Heal(int amount)

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Game.Level;
+using Game.Play.Skills;
 using Game.Play.Units;
 using Gummi.MVC;
 using Gummi;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Object = UnityEngine.Object;
 using Space = Game.Level.Space;
 
 #if UNITY_EDITOR
@@ -24,6 +24,7 @@ namespace Game.Controllers.Game
     
     public class GameController : SubController<GameState, GameView>
     {
+        #region Variables
         [SerializeField]
         PlayerInput _input;
         InputAction _mouse;
@@ -51,9 +52,14 @@ namespace Game.Controllers.Game
         Tile _hovering;
         
         [SerializeField, Readonly]
-        Tile _selected;
+        Pawn _selected;
 
-        Board _board => Board.Instance;
+        [SerializeField, ReadOnly]
+        SkillSO _selectedSkill;
+
+        static Board _board => Board.Instance;
+        Dictionary<Pawn, TurnData> _enemyTurns = new();
+        #endregion
 
         void Start()
         {
@@ -62,11 +68,12 @@ namespace Game.Controllers.Game
             UI.UpdateTurn(_turnsLeft);
         }
 
+        #region State Management
         public void GoToNextSubState()
         {
             // cycle to the next state
             var state = _state + 1;
-            if (!Enum.IsDefined(typeof(SubGameState), state))
+            if (!System.Enum.IsDefined(typeof(SubGameState), state))
             {
                 state = SubGameState.EnemyMove;
             }
@@ -106,6 +113,7 @@ namespace Game.Controllers.Game
                     break;
             }
         }
+        #endregion
         
         #region Deployment
         void DeployEnter()
@@ -174,10 +182,12 @@ namespace Game.Controllers.Game
         #region Enemy Move
         void MoveEnter()
         {
+            _enemyTurns.Clear();
             foreach (Pawn enemy in _board.Pawns(Team.Enemy))
             {
                 // calculate next turn
                 TurnData turn = EnemyAI.PlanTurn(_board, enemy);
+                _enemyTurns.Add(enemy, turn);
                 
                 // move enemy
                 Vector2Int move = enemy.Position;
@@ -186,8 +196,8 @@ namespace Game.Controllers.Game
                 move = turn.Move;
                 _board.Spaces[move.x, move.y].AddPawn(enemy);
                 
-                // TODO: show player the skill being used
-                // and store skill used to attack laters
+                // TODO: animate the movement
+                // show the enemy in the pawn selection
             }
             
             GoToNextSubState();
@@ -220,10 +230,73 @@ namespace Game.Controllers.Game
         {
             // select new tile
             UI.Select(tile);
-            
             #if UNITY_EDITOR
             Selection.objects = new Object[] { tile.gameObject };
             #endif
+
+            // // take turn for the player's pawn
+            // if (_selected && _selected.Team == Team.Player)
+            // {
+            //     // try to move pawn
+            //     if (!_selectedSkill)
+            //     {
+            //         // tile is occupied
+            //         if (!tile.CanBeOccupied)
+            //         {
+            //             print("tile is occupied");
+            //             PlayerDeselectPawn();
+            //             return;
+            //         }
+            //         
+            //         // move the pawn 
+            //         float distance = _board.GetDistance(_selected.Position, tile.Space.Position);
+            //         if (distance <= _selected.Movement)
+            //         {
+            //             print("move pawn");
+            //             return;
+            //         }
+            //
+            //         // move is out of range
+            //         PlayerDeselectPawn();
+            //         print("move is out of range");
+            //         return;
+            //     }
+            //     
+            //     // use skill
+            //     float dist = _board.GetDistance(_selected.Position, tile.Space.Position);
+            //     if (dist <= _selectedSkill.Range)
+            //     {
+            //         print("use skill");
+            //         return;
+            //     }
+            //     
+            //     // skill is out of range
+            //     print("skill is out of range");
+            //     PlayerDeselectSkill();
+            //     return;
+            // }
+            //
+            // PlayerSelectPawn(tile.Space.Pawn);
+        }
+
+        void PlayerDeselectPawn()
+        {
+            _selected = null;
+        }
+        
+        void PlayerSelectPawn(Pawn pawn)
+        {
+            _selected = pawn;
+        }
+
+        void PlayerDeselectSkill()
+        {
+            _selectedSkill = null;
+        }
+        
+        void PlayerSelectSkill(SkillSO skill)
+        {
+            _selectedSkill = skill;
         }
 
         bool PlayerDone()
@@ -237,28 +310,22 @@ namespace Game.Controllers.Game
 
             root.ChangeController(GameState.Win);
             return true;
-
         }
         #endregion
         
         #region Enemy Attack
         void AttackEnter()
         {
-            // foreach (Pawn enemy in _board.Pawns(Team.Enemy))
-            // {
-            //     // calculate next turn
-            //     TurnData turn = EnemyAI.PlanTurn(_board, enemy);
-            //     
-            //     // move enemy
-            //     Vector2Int move = enemy.Position;
-            //     _board.Spaces[move.x, move.y].RemovePawn();
-            //     
-            //     move = turn.Move;
-            //     _board.Spaces[move.x, move.y].AddPawn(enemy);
-            //     
-            //     // TODO: show player the skill being used
-            //     // and store skill used to attack laters
-            // }
+            foreach (var kvp in _enemyTurns)
+            {
+                Pawn em = kvp.Key;
+                TurnData turn = kvp.Value;
+
+                turn.Skill.Activate(em, _board, turn.Target);
+                
+                // TODO: animate the attacks
+                // show the enemy (and skill) active
+            }
             
             GoToNextSubState();
         }
@@ -293,7 +360,7 @@ namespace Game.Controllers.Game
             if (!context.performed) return;
             
             Vector2 mouse = GetMousePosition();
-            Tile tile = _selected = GetTileFromMouse(mouse);
+            Tile tile = GetTileFromMouse(mouse);
 
             // deselect tile
             if (!tile)
