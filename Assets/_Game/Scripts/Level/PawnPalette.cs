@@ -9,7 +9,6 @@ namespace Game.Level
         Big = 0, Mass = 1,
     }
     
-    [CreateAssetMenu(menuName="Level/Unit Palette")]
     public class PawnPalette : DynamicSingletonSO<PawnPalette>
     {
         [SerializeField]

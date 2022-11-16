@@ -9,7 +9,6 @@ namespace Game.Level
         Grass = 0, Building = 1, Mountain = 2,
     }
     
-    [CreateAssetMenu(menuName="Level/Tile Palette")]
     public class TilePalette : DynamicSingletonSO<TilePalette>
     {
         [SerializeField]

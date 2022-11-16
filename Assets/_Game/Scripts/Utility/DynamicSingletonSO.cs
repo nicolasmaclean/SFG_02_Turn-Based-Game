@@ -2,11 +2,15 @@
 // which is from https://www.youtube.com/watch?v=6kWUGEQiMUI&ab_channel=whateep
 // ReSharper disable StaticMemberInGenericType
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+
+#if UNITY_EDITOR
+using System.Collections.Generic;
+using Game.Utility;
+using UnityEditor;
+using Type = System.Type;
+#endif
 
 namespace Game.Utility
 {
@@ -15,7 +19,7 @@ namespace Game.Utility
     /// Saving must be manually called with <see cref="Save"/>.
     /// </summary>
     /// <typeparam name="T"> The ScriptableObject type deriving from this class. </typeparam>
-    public class DynamicSingletonSO<T> : ScriptableObject where T : DynamicSingletonSO<T>
+    public abstract class DynamicSingletonSO<T> : ScriptableObject where T : DynamicSingletonSO<T>
     {
         /// <summary>
         /// Singleton with built-in save functionality. Default data is stored in /Assets/Resources/. Player's data
@@ -77,7 +81,7 @@ namespace Game.Utility
                 JsonUtility.FromJsonOverwrite(fileContents, obj);
                 return obj;
             }
-            catch (Exception)
+            catch (System.Exception)
             {
                 Debug.LogError($"Unable to read SingletonSO ({ typeof(T).Name }) file from { s_filePath }");
                 return null;
@@ -97,11 +101,11 @@ namespace Game.Utility
             // validatation
             if(assets == null || assets.Length < 1)
             {
-                throw new Exception($"Not found Singleton Scriptable Object of type: { typeof(T).Name }");
+                throw new System.Exception($"Not found Singleton Scriptable Object of type: { typeof(T).Name }");
             }
             if (assets.Length > 1)
             {
-                throw new Exception($"More than 1 instance of Singleton Scriptable Object of type: { typeof(T).Name } found");
+                throw new System.Exception($"More than 1 instance of Singleton Scriptable Object of type: { typeof(T).Name } found");
             }
                     
             return assets[0];
@@ -134,25 +138,95 @@ namespace Game.Utility
                 
                 return true;
             }
-            catch (Exception)
+            catch (System.Exception)
             {
                 Debug.LogError($"Unable to write SingletonSO file to { s_filePath }");
                 return false;
             }
         }
         
-        #if UNITY_EDITOR
-            [Button]
-            public void ReadLocal()
-            {
-                Debug.Log($"{name}\n" + ReadLocalData());
-            }
+#if UNITY_EDITOR
+        [Button]
+        public void ReadLocal()
+        {
+            Debug.Log($"{name}\n" + ReadLocalData());
+        }
 
-            [Button]
-            public void ReadDefault()
-            {
-                Debug.Log($"{name}\n" + ReadDefaultData());
-            }
-        #endif
+        [Button]
+        public void ReadDefault()
+        {
+            Debug.Log($"{name}\n" + ReadDefaultData());
+        }
+#endif
     }
 }
+
+#if UNITY_EDITOR
+namespace GameEditor
+{
+    [InitializeOnLoad]
+    public static class SingletonSOPopulator
+    {
+        static SingletonSOPopulator()
+        {
+            Populate();
+        }
+
+        [MenuItem("Gummi/Populate Singleton SOs")]
+        static void Populate()
+        {
+            foreach (var type in FindSubClassesOfSingletonSO())
+            {
+                Object[] instances = Resources.LoadAll("", type);
+                if (instances.Length > 0) continue;
+
+                CreateAssetInResources(type);
+            }
+        }
+
+        static void CreateAssetInResources(Type type)
+        {
+            // create resources folder if not already
+            const string resources = "Assets/Resources";
+            if (!AssetDatabase.IsValidFolder(resources))
+            {
+                AssetDatabase.CreateFolder("Assets", "Resources");
+            }
+                
+            string fileName = ObjectNames.NicifyVariableName(type.Name);
+            var obj = ScriptableObject.CreateInstance(type);
+            AssetDatabase.CreateAsset(obj, $"{resources}/{ fileName }.asset");
+            
+            Debug.Log($"Created Scriptable Object Singleton '{ fileName }' in the Resources folder.");
+        }
+
+        static IEnumerable<Type> FindSubClassesOfSingletonSO()
+        {
+            var baseType = typeof(DynamicSingletonSO<>);
+            var assembly = baseType.Assembly;
+            // print(baseType + " " + baseType.GetGenericTypeDefinition());
+            // baseType = baseType.GetGenericTypeDefinition();
+
+            List<Type> types = new List<Type>();
+            foreach (var t in assembly.GetTypes())
+            {
+                if (!t.IsClass || t.IsAbstract) continue;
+
+                // generics weirdness
+                // suppress error when cramming baseType as a generic type of baseType
+                // there is no way to check that without just trying
+                try
+                {
+                    if (t.IsSubclassOf(baseType.MakeGenericType(t)))
+                    {
+                        types.Add(t);
+                    }
+                }
+                catch (System.ArgumentException) { }
+            }
+
+            return types;
+        }
+    }
+}
+#endif

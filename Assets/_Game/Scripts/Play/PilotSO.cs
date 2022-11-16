@@ -2,7 +2,7 @@
 
 namespace Game.Play
 {
-    [CreateAssetMenu(menuName = "Level/Pilot")]
+    [CreateAssetMenu(menuName = "Pilot")]
     public class PilotSO : ScriptableObject
     {
         public Sprite Normal;
