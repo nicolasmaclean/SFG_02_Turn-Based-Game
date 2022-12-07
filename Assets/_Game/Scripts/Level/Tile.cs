@@ -35,18 +35,20 @@ namespace Game.Level
         [TextArea(3, 8)]
         string _description = "Description...";
 
+        [SerializeField]
+        Image _highlight;
+        
         public Space Space { get; private set; }
         Vector2Int _position => Space.Position;
 
         public Board Board { get; private set; }
-        public CanvasGroup _group;
-        Image[] _imgs;
+        CanvasGroup _group;
         
         void Start()
         {
             _group = GetComponent<CanvasGroup>();
-            _imgs = GetComponentsInChildren<Image>();
             AnimateIn();
+            Unhighlight();
         }
 
         public void Configure(Board board, Space space)
@@ -72,19 +74,20 @@ namespace Game.Level
 
         public void Damage(int amount) { }
 
-        public void Highlight() => SetColor(Color.yellow);
-        public void Unhighlight() => SetColor(Color.white);
-
-        public void OnHoverEnter() => SetColor(Color.red);
-        public void OnHoverExit() => SetColor(Color.white);
-
-        void SetColor(Color color)
+        public void Highlight()
         {
-            foreach (Image img in _imgs)
-            {
-                img.color = color;
-            }
+            if (!_highlight) return;
+            _highlight.gameObject.SetActive(true);
         }
+        
+        public void Unhighlight()
+        {
+            if (!_highlight) return;
+            _highlight.gameObject.SetActive(false);
+        }
+
+        // public void OnHoverEnter() => SetColor(Color.red);
+        // public void OnHoverExit() => SetColor(Color.white);
 
         void AnimateIn()
         {

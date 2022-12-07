@@ -94,6 +94,8 @@ namespace Game.Controllers.Game
 
         void EnterState()
         {
+            _board.UnhighlightAll();
+            
             switch (_state)
             {
                 case SubGameState.Deployment:
@@ -210,22 +212,6 @@ namespace Game.Controllers.Game
             _playerTurns.Clear();
         }
         
-        void PlayerHover(Tile tile)
-        {
-            // exit, hover has not changed
-            if (_hovering == tile) return;
-
-            // stop hovering over old tile
-            if (_hovering)
-            {
-                _hovering.OnHoverExit();
-            }
-
-            // hover over new tile
-            _hovering = tile;
-            _hovering.OnHoverEnter();
-        }
-
         void PlayerClick(Tile tile)
         {
             // select new tile
@@ -253,6 +239,11 @@ namespace Game.Controllers.Game
                 
                 // show skill buttons
                 UI.ShowSkills(_selected);
+                
+                // exit, pawn movement has been exhausted
+                if (_playerTurns.ContainsKey(pawn) && _playerTurns[pawn] == PawnState.Moved) return;
+                _board.Highlight(_board.GetTilesInRange(_selected.Position, _selected.Movement));
+                
                 return;
             }
             
@@ -280,14 +271,22 @@ namespace Game.Controllers.Game
                 if (moved)
                 {
                     _playerTurns[_selected] = PawnState.Moved;
+                    _board.UnhighlightAll();
                     return;
                 }
+            }
+            
+            // exit, the selected pawn was clicked again
+            if (tile.Space.Pawn && tile.Space.Pawn == _selected)
+            {
+                return;
             }
 
         postAction:
             _selected = null;
             _selectedSkill = null;
             UI.Attacked();
+            _board.UnhighlightAll();
         }
 
         bool PlayerDone()
@@ -307,10 +306,18 @@ namespace Game.Controllers.Game
             return true;
         }
 
-        public void SelectSkill(SkillSO skill) => _selectedSkill = skill;
+        public void SelectSkill(SkillSO skill)
+        {
+            _selectedSkill = skill;
+            
+            _board.UnhighlightAll();
+            _board.Highlight(_board.GetTilesInRange(_selected.Position, skill.Range));
+        }
+        
         public void DeselectSkill()
         {
             _selectedSkill = null;
+            _board.UnhighlightAll();
         }
 
         enum PawnState
@@ -361,8 +368,8 @@ namespace Game.Controllers.Game
             switch (_state)
             {
                 case SubGameState.Deployment: DeployHover(tile); return;
-                case SubGameState.Player: PlayerHover(tile); return;
                 
+                case SubGameState.Player:
                 case SubGameState.EnemyMove:
                 case SubGameState.EnemyAttack:
                 default: return;

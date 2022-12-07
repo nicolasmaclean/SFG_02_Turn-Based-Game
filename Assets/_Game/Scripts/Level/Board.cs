@@ -223,20 +223,25 @@ namespace Game.Level
         #endregion
         
         #region Feedback
+        HashSet<Vector2Int> _highlighted = new();
         public void Highlight(HashSet<Vector2Int> tiles)
         {
             foreach (var vector in tiles)
             {
                 Spaces[vector.x, vector.y].Tile.Highlight();
             }
+            
+            _highlighted.UnionWith(tiles);
         }
 
-        public void Unhighlight(HashSet<Vector2Int> tiles)
+        public void UnhighlightAll()
         {
-            foreach (var vector in tiles)
+            foreach (var vector in _highlighted)
             {
                 Spaces[vector.x, vector.y].Tile.Unhighlight();
             }
+            
+            _highlighted.Clear();
         }
         #endregion
 

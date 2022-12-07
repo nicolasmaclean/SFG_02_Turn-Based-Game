@@ -858,6 +858,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Highlight
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 153
+        width: 16
+        height: 17
+      alignment: 9
+      pivot: {x: 0.5, y: 0.7058824}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 67a6894b7501c444aaf92530cb594372
+      internalID: 19342569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -952,7 +973,6 @@ TextureImporter:
       Isometric_MedievalFantasy_Tiles_83: 168259423
       Isometric_MedievalFantasy_Tiles_61: 1909468154
       Isometric_MedievalFantasy_Tiles_78: -359722243
-      Isometric_MedievalFantasy_Tiles_1: 19342569
       Isometric_MedievalFantasy_Tiles_54: -605325978
       Grass_02: -76177183
       Isometric_MedievalFantasy_Tiles_109: -726166660
@@ -979,6 +999,7 @@ TextureImporter:
       Isometric_MedievalFantasy_Tiles_88: -2093547499
       Isometric_MedievalFantasy_Tiles_33: 1087335559
       Isometric_MedievalFantasy_Tiles_86: -778837918
+      Highlight: 19342569
       Isometric_MedievalFantasy_Tiles_65: -820015512
   spritePackingTag: 
   pSDRemoveMatte: 0
