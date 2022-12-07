@@ -17,6 +17,8 @@ namespace Game.Play.Units
     public class Pawn : MonoBehaviour
     {
         public UnityEvent OnHealthChange;
+        public UnityEvent OnHurt;
+        
         public int InitialHealth => _initHealth;
         public int Health => _health;
         public int Movement => _movement;
@@ -54,6 +56,7 @@ namespace Game.Play.Units
         {
             _health -= amount;
             OnHealthChange?.Invoke();
+            OnHurt?.Invoke();
             
             if (_health <= 0)
             {
