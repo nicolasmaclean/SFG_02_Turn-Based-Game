@@ -16,6 +16,9 @@ namespace Game.Level
         
         [SerializeField]
         Pawn _massMech;
+
+        [SerializeField]
+        Healthbar _healthbar;
         
         public static Pawn Get(PawnType type)
         {
@@ -38,8 +41,12 @@ namespace Game.Level
                 Debug.LogError($"Unable to get Tile instance for '{ type }'");
                 return null;
             }
+            
+            Pawn pawn = Instantiate(prefab);
+            Healthbar healthbar = Instantiate(Instance._healthbar, pawn.transform);
+            healthbar.Configure(pawn);
 
-            return Instantiate(prefab);
+            return pawn;
         }
 
         public static Pawn Get(PawnType type, Transform parent)

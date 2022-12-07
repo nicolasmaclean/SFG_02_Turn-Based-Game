@@ -5,6 +5,7 @@ using Game.Level;
 using Game.Play.Skills;
 using Gummi;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Game.Play.Units
 {
@@ -15,6 +16,7 @@ namespace Game.Play.Units
     
     public class Pawn : MonoBehaviour
     {
+        public UnityEvent OnHealthChange;
         public int InitialHealth => _initHealth;
         public int Health => _health;
         public int Movement => _movement;
@@ -51,6 +53,8 @@ namespace Game.Play.Units
         public bool Hurt(int amount)
         {
             _health -= amount;
+            OnHealthChange?.Invoke();
+            
             if (_health <= 0)
             {
                 Kill();
@@ -68,6 +72,7 @@ namespace Game.Play.Units
 
         public void Heal(int amount)
         {
+            OnHealthChange?.Invoke();
             _health += amount;
         }
 
