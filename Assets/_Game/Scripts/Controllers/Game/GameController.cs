@@ -61,6 +61,7 @@ namespace Game.Controllers.Game
 
         static Board _board => Board.Instance;
         Dictionary<Pawn, TurnData> _enemyTurns = new();
+        Dictionary<Pawn, PawnState> _playerTurns = new();
         #endregion
 
         void Start()
@@ -137,10 +138,9 @@ namespace Game.Controllers.Game
 
         void DeployHover(Tile target)
         {
-            // TODO: update tile/unit selection
             Space space = target.Space;
+            UI.Select(target, false);
             
-            // TODO: what do we do after pawns have been deployed??
             if (_pawnsToDeploy.Count == 0) return;
             
             // exit, we want to deploy unit in the drop zone only
@@ -193,11 +193,7 @@ namespace Game.Controllers.Game
                 _enemyTurns.Add(enemy, turn);
                 
                 // move enemy
-                Vector2Int move = enemy.Position;
-                _board.Spaces[move.x, move.y].RemovePawn();
-                
-                move = turn.Move;
-                _board.Spaces[move.x, move.y].AddPawn(enemy);
+                _board.TryMove(enemy, turn.Move);
                 
                 // TODO: animate the movement
                 // show the enemy in the pawn selection
@@ -211,6 +207,7 @@ namespace Game.Controllers.Game
         void PlayerEnter()
         {
             UI.ShowPlayerTurn();
+            _playerTurns.Clear();
         }
         
         void PlayerHover(Tile tile)
@@ -232,80 +229,75 @@ namespace Game.Controllers.Game
         void PlayerClick(Tile tile)
         {
             // select new tile
-            UI.Select(tile);
-            #if UNITY_EDITOR
-            Selection.objects = new Object[] { tile.gameObject };
-            #endif
+            UI.Select(tile, true);
+            // #if UNITY_EDITOR
+            // Selection.objects = new Object[] { tile.gameObject };
+            // #endif
+            
+            // select pawn
+            bool noPawnIsSelected = _selected == null;
+            if (noPawnIsSelected)
+            {
+                // exit, the tile doesn't have a pawn
+                Pawn pawn = tile.Space.Pawn;
+                if (pawn == null) return;
+                
+                // exit, you can't select the enemy. silly goose
+                if (pawn.Team != Team.Player) return;
+                
+                // exit, pawn turn has been exhausted
+                if (_playerTurns.ContainsKey(pawn) && _playerTurns[pawn] == PawnState.Attacked) return;
+                
+                _selected = pawn;
+                _selectedSkill = null;
+                
+                // show skill buttons
+                UI.ShowSkills(_selected);
+                return;
+            }
+            
+            // try attack
+            bool skillIsSelected = _selectedSkill != null;
+            if (skillIsSelected)
+            {
+                // validate attack is in range
+                int distance = _board.GetDistance(_selected.Position, tile.Space.Position);
+                if (distance <= _selectedSkill.Range)
+                {
+                    _selectedSkill.Activate(_selected, _board, tile.Space.Position);
+                    _playerTurns[_selected] = PawnState.Attacked;
+                    UI.Attacked();
+                    goto postAction;
+                }
+            }
 
-            // // take turn for the player's pawn
-            // if (_selected && _selected.Team == Team.Player)
-            // {
-            //     // try to move pawn
-            //     if (!_selectedSkill)
-            //     {
-            //         // tile is occupied
-            //         if (!tile.CanBeOccupied)
-            //         {
-            //             print("tile is occupied");
-            //             PlayerDeselectPawn();
-            //             return;
-            //         }
-            //         
-            //         // move the pawn 
-            //         float distance = _board.GetDistance(_selected.Position, tile.Space.Position);
-            //         if (distance <= _selected.Movement)
-            //         {
-            //             print("move pawn");
-            //             return;
-            //         }
-            //
-            //         // move is out of range
-            //         PlayerDeselectPawn();
-            //         print("move is out of range");
-            //         return;
-            //     }
-            //     
-            //     // use skill
-            //     float dist = _board.GetDistance(_selected.Position, tile.Space.Position);
-            //     if (dist <= _selectedSkill.Range)
-            //     {
-            //         print("use skill");
-            //         return;
-            //     }
-            //     
-            //     // skill is out of range
-            //     print("skill is out of range");
-            //     PlayerDeselectSkill();
-            //     return;
-            // }
-            //
-            // PlayerSelectPawn(tile.Space.Pawn);
-        }
+            // try move
+            if (tile.CanBeOccupied)
+            {
+                if (_playerTurns.ContainsKey(_selected) && _playerTurns[_selected] == PawnState.Moved) return;
+                
+                bool moved = _board.TryMove(_selected, tile.Space.Position);
+                if (moved)
+                {
+                    _playerTurns[_selected] = PawnState.Moved;
+                    return;
+                }
+            }
 
-        void PlayerDeselectPawn()
-        {
+        postAction:
             _selected = null;
-        }
-        
-        void PlayerSelectPawn(Pawn pawn)
-        {
-            _selected = pawn;
-        }
-
-        void PlayerDeselectSkill()
-        {
             _selectedSkill = null;
-        }
-        
-        void PlayerSelectSkill(SkillSO skill)
-        {
-            _selectedSkill = skill;
+            UI.Attacked();
         }
 
         bool PlayerDone()
         {
             _turnsLeft--;
             UI.UpdateTurn(_turnsLeft);
+            
+            _selected = null;
+            _selectedSkill = null;
+            
             if (_turnsLeft > 0)
             {
                 return false;
@@ -313,6 +305,17 @@ namespace Game.Controllers.Game
 
             root.ChangeController(GameState.Win);
             return true;
+        }
+
+        public void SelectSkill(SkillSO skill) => _selectedSkill = skill;
+        public void DeselectSkill()
+        {
+            _selectedSkill = null;
+        }
+
+        enum PawnState
+        {
+            Null = 0, Moved = 1, Attacked = 2,
         }
         #endregion
         

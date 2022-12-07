@@ -34,9 +34,9 @@ namespace Game.Level
         #region Combat
         public void Hit(Vector2Int pos, Vector2Int from, int damage)
         {
-            Space space    = Spaces[pos.x, pos.y];
-            Tile tile      = space.Tile;
-            Pawn pawn      = space.Pawn;
+            Space space = Spaces[pos.x, pos.y];
+            Tile tile   = space.Tile;
+            Pawn pawn   = space.Pawn;
             
             // damage tile
             tile.Damage(damage);
@@ -90,6 +90,19 @@ namespace Game.Level
             {
                 tile.Damage(1);
             }
+        }
+
+        public bool TryMove(Pawn pawn, Vector2Int to)
+        {
+            Vector2Int from = pawn.Position;
+            
+            // validate move is in range
+            int distance = GetDistance(from, to);
+            if (distance > pawn.Movement) return false;
+            
+            Spaces[from.x, from.y].RemovePawn();
+            Spaces[to.x,   to.y].AddPawn(pawn);
+            return true;
         }
         #endregion
 
