@@ -879,6 +879,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Arrow
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 84
+        width: 16
+        height: 21
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5714286}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 679e784ed71e257498b069087abb3764
+      internalID: -9322383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -975,6 +996,7 @@ TextureImporter:
       Isometric_MedievalFantasy_Tiles_78: -359722243
       Isometric_MedievalFantasy_Tiles_54: -605325978
       Grass_02: -76177183
+      Arrow: -9322383
       Isometric_MedievalFantasy_Tiles_109: -726166660
       Isometric_MedievalFantasy_Tiles_40: -1639875060
       Isometric_MedievalFantasy_Tiles_71: 428431242

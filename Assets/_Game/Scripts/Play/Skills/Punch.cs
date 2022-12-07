@@ -13,10 +13,12 @@ namespace Game.Play.Skills
         [SerializeField]
         int _damage = 1;
         
-        public override void Activate(Pawn user, Board board, Vector2Int target)
+        public override bool Activate(Pawn user, Board board, Vector2Int target)
         {
-            base.Activate(user, board, target);
+            if (!base.Activate(user, board, target)) return false;
+            
             board.Hit(target, user.Position, _damage);
+            return true;
         }
 
         public override Vector2Int Evaluate(Board board, Pawn user, Vector2Int pos, out Effective effectiveness)

@@ -125,6 +125,7 @@ namespace Game.Controllers.Game
         void DeployEnter()
         {
             _board.Highlight(_board.GetDropZone());
+            UI.ShowDeployTutorial();
             
             // create/hide pawns
             _pawnsToDeploy = new List<Pawn>();
@@ -179,6 +180,7 @@ namespace Game.Controllers.Game
             if (_pawnsToDeploy.Count == 0)
             {
                 // TODO: show confirm button
+                UI.HideDeployTutorial();
                 GoToNextSubState();
             }
         }
@@ -196,7 +198,8 @@ namespace Game.Controllers.Game
                 
                 // move enemy
                 _board.TryMove(enemy, turn.Move);
-                
+                UI.UpdateEnemyPlan(turn);
+
                 // TODO: animate the movement
                 // show the enemy in the pawn selection
             }
@@ -334,10 +337,11 @@ namespace Game.Controllers.Game
                 Pawn em = kvp.Key;
                 TurnData turn = kvp.Value;
 
-                turn.Skill?.Activate(em, _board, turn.Target);
+                Vector2Int target = turn.Target + em.Position;
+                turn.Skill?.Activate(em, _board, target);
                 
                 // TODO: animate the attacks
-                // show the enemy (and skill) active
+                UI.HideEnemyPlan();
             }
             
             GoToNextSubState();

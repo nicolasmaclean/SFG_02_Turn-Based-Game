@@ -11,6 +11,14 @@ namespace Game.Controllers.Game
 {
     public class GameView : UIView
     {
+        [Header("Deployment")]
+        [SerializeField]
+        GameObject _deploymentTutorial;
+
+        [Header("Enemy")]
+        [SerializeField]
+        Arrows _arrows;
+        
         [Header("Player Turn")]
         [SerializeField]
         Button _endTurn;
@@ -39,6 +47,7 @@ namespace Game.Controllers.Game
             HideSelectionCursor();
             HidePlayerTurn();
             _playerInterface.SetActive(false);
+            _arrows.gameObject.SetActive(false);
         }
 
         public void UpdateTurn(int turn)
@@ -110,5 +119,35 @@ namespace Game.Controllers.Game
             _endTurn.gameObject.SetActive(false);
             _playerInterface.SetActive(false);
         }
+
+        public void UpdateEnemyPlan(TurnData turn)
+        {
+            if (turn.Skill == null)
+            {
+                _arrows.gameObject.SetActive(false);
+                return;
+            }
+            
+            if (!_arrows.gameObject.activeInHierarchy) _arrows.gameObject.SetActive(true);
+            
+            Vector2Int position = turn.Move;
+            _arrows.transform.position = Board.Instance.Spaces[position.x, position.y].Tile.transform.position;
+
+            int direction;
+            if (turn.Target == new Vector2Int(0, -1)) direction = 3;
+            else if (turn.Target == new Vector2Int(0, 1)) direction = 1;
+            else if (turn.Target == new Vector2Int(-1, 0)) direction = 0;
+            else /* if (turn.Target == new Vector2Int(1, 0)) */ direction = 2;
+            
+            _arrows.Show(direction);
+        }
+
+        public void HideEnemyPlan()
+        {
+            _arrows.gameObject.SetActive(false);
+        }
+
+        public void ShowDeployTutorial() => _deploymentTutorial.SetActive(true);
+        public void HideDeployTutorial() => _deploymentTutorial.SetActive(false);
     }
 }

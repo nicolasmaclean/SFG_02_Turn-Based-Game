@@ -55,7 +55,7 @@ namespace Game.Level
                     effective = eff;
                     turn.Skill = skill;
                     turn.Move = position;
-                    turn.Target = target;
+                    turn.Target = target - position;
                 }
             }
 

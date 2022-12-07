@@ -34,8 +34,11 @@ namespace Game.Play.Skills
         [SerializeField]
         protected int _range;
 
-        public virtual void Activate(Pawn user, Board board, Vector2Int target)
+        public virtual bool Activate(Pawn user, Board board, Vector2Int target)
         {
+            // exit, target is out-of-bounds
+            if (target.x < 0 || target.y < 0 || target.x > 7 || target.y > 7) return false;
+            
             Vector2Int delta = target - user.Position;
             float distance = delta.x + delta.y;
 
@@ -43,6 +46,8 @@ namespace Game.Play.Skills
             {
                 throw new System.Exception($"{name} was activated with a target that is out of range.");
             }
+
+            return true;
         }
 
         public Vector2Int Evaluate(Board board, Pawn user, Vector2Int position)
