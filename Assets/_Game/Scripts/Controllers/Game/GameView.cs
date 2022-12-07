@@ -60,7 +60,8 @@ namespace Game.Controllers.Game
                 _selectionCursor.gameObject.SetActive(true);
             }
 
-            _selectionCursor.position = tile.transform.position;
+            _selectionCursor.SetParent(tile.transform);
+            _selectionCursor.localPosition = Vector3.zero;
             _txt_selection.text = tile.DisplayName;
         }
 
